@@ -24,7 +24,9 @@ export default function EmailSignup({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email || !email.includes('@')) {
+    // Use a regex to validate the email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
       setMessage('Please enter a valid email address');
       setStatus('error');
       return;
