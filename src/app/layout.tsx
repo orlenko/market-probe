@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -37,22 +38,24 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <head>
-        {/* Plausible Analytics Script - Only add in production */}
-        {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
-          <script
-            defer
-            data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
-            src="https://plausible.io/js/script.js"
-          />
-        )}
-      </head>
-      <body className={inter.className}>
-        <div className="flex min-h-screen flex-col">
-          {children}
-        </div>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <head>
+          {/* Plausible Analytics Script - Only add in production */}
+          {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
+            <script
+              defer
+              data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+              src="https://plausible.io/js/script.js"
+            />
+          )}
+        </head>
+        <body className={inter.className}>
+          <div className="flex min-h-screen flex-col">
+            {children}
+          </div>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

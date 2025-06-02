@@ -23,18 +23,21 @@
     "setup:clean": "docker-compose down -v && npm run setup:local"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.20.2",
+    "@heroicons/react": "^2.2.0",
     "@prisma/client": "^6.8.2",
     "crypto-js": "^4.2.0",
-    "next": "14.0.4",
+    "next": "^15.3.3",
     "nodemailer": "^7.0.3",
     "prisma": "^6.8.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "zod": "^3.25.48"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/crypto-js": "^4.2.2",
     "@types/jest": "^29.5.0",
     "@types/node": "^20",

@@ -1,9 +1,18 @@
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
-export async function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host') || ''
-  const url = request.nextUrl
+const isProtectedRoute = createRouteMatcher(['/admin(.*)'])
+
+export default clerkMiddleware(async (auth, req: NextRequest) => {
+  // Protect admin routes
+  if (isProtectedRoute(req)) {
+    await auth.protect()
+  }
+
+  // Custom domain routing logic
+  const hostname = req.headers.get('host') || ''
+  const url = req.nextUrl
 
   // Skip middleware for:
   // - API routes
@@ -32,7 +41,7 @@ export async function middleware(request: NextRequest) {
 
     if (project && project.status === 'ACTIVE') {
       // Rewrite to the project page
-      const rewriteUrl = new URL(`/p/${project.slug}${url.pathname}${url.search}`, request.url)
+      const rewriteUrl = new URL(`/p/${project.slug}${url.pathname}${url.search}`, req.url)
       return NextResponse.rewrite(rewriteUrl)
     }
   } catch (error) {
@@ -42,7 +51,7 @@ export async function middleware(request: NextRequest) {
 
   // If no custom domain found, continue with normal routing
   return NextResponse.next()
-}
+})
 
 export const config = {
   matcher: [
