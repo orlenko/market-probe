@@ -15,11 +15,11 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
   const url = req.nextUrl
 
   // Skip middleware for:
-  // - API routes
+  // - Non-admin API routes
   // - Static files
   // - Next.js internals
   if (
-    url.pathname.startsWith('/api/') ||
+    (url.pathname.startsWith('/api/') && !url.pathname.startsWith('/api/admin/')) ||
     url.pathname.startsWith('/_next/') ||
     url.pathname.startsWith('/favicon.ico') ||
     url.pathname.includes('.')
@@ -57,11 +57,12 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * - api (API routes) - EXCEPT /api/admin/* which need authentication
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api/(?!admin).*|_next/static|_next/image|favicon.ico).*)',
+    '/api/admin/(.*)'
   ],
 }

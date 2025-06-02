@@ -23,7 +23,7 @@ model Project {
   title       String   @db.VarChar(200)
   description String?  @db.Text
   domain      String?  @unique @db.VarChar(255) // null if subpath hosted, custom domain if mapped
-  status      ProjectStatus @default(ACTIVE)
+  status      ProjectStatus @default(DRAFT)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -92,6 +92,7 @@ model AnalyticsEvent {
 
 // Enums for type safety
 enum ProjectStatus {
+  DRAFT
   ACTIVE
   ARCHIVED
   GRADUATED // moved to production/success
