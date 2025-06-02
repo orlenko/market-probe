@@ -1,106 +1,208 @@
-# Market-Probe Development Plan
+# MarketProbe 2.0 Development Plan
 
-## Project Overview
-A reusable landing page template for market validation of product ideas with:
-- Single page promoting a potential product
-- Email capture for waiting list sign-ups
-- Analytics integration
-- A/B testing capability
+## Project Evolution Overview
+**From:** Single landing page template for market validation
+**To:** Multi-project SaaS platform hosting multiple idea validation landing pages across domains
+
+### Core Features:
+- **Multi-project hosting:** Many landing pages for different startup/product ideas
+- **Multi-domain routing:** Subpath (`/p/project-slug`) and custom domain support
+- **Native form handling:** No external dependencies, all data stored in Postgres
+- **First-party analytics:** Privacy-preserving analytics with conversion tracking
+- **Admin dashboard:** Project management, analytics viewing, form submission management
 
 ## Tech Stack
-- **Framework**: Next.js with static export
+- **Framework**: Next.js 14 with App Router and static export
 - **Styling**: Tailwind CSS
 - **Language**: TypeScript
-- **Email Handling**: Formspree
-- **Analytics**: Plausible
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: Clerk
+- **Email Notifications**: SendGrid/Mailgun/SMTP
+- **Analytics**: Custom first-party system (inspired by Plausible/Umami)
 - **Hosting**: Vercel
 
+## Database Schema
+### Core Tables:
+- **Projects**: `id`, `slug`, `title`, `description`, `domain`, `status`, timestamps
+- **PageConfigs**: `project_id`, `template_config` (JSON), `design_config` (JSON)
+- **FormSubmissions**: `project_id`, `submitted_at`, `form_data` (JSON)
+- **AnalyticsEvents**: `project_id`, `event_type`, `timestamp`, `referrer`, `user_agent`, `ip_hash`
+
 ## Project Structure
-- `/app`: Next.js app router
-- `/components`: Reusable UI components
-- `/public`: Static assets
-- `/styles`: Global styles
-- `/lib`: Utility functions and helpers
-- `/types`: TypeScript type definitions
+```
+marketprobe-app/
+├── src/
+│   ├── app/
+│   │   ├── admin/           # Admin dashboard routes
+│   │   ├── api/             # API endpoints
+│   │   │   ├── form/[slug]/ # Form submission handling
+│   │   │   ├── analytics/   # Analytics tracking
+│   │   │   └── projects/    # Project CRUD operations
+│   │   ├── p/[slug]/        # Dynamic project landing pages
+│   │   └── [domain]/        # Custom domain routing (advanced)
+│   ├── components/
+│   │   ├── admin/           # Admin UI components
+│   │   ├── landing/         # Landing page components
+│   │   └── shared/          # Shared components
+│   ├── lib/
+│   │   ├── db.ts            # Database connection
+│   │   ├── analytics.ts     # Analytics utilities (enhanced)
+│   │   ├── email.ts         # Email notification system
+│   │   └── domain-routing.ts # Domain routing logic
+│   └── types/               # TypeScript definitions
+├── prisma/
+│   ├── schema.prisma        # Database schema
+│   └── migrations/          # Database migrations
+└── scripts/                 # Deployment and setup scripts
+```
 
 ## Development Phases
 
-### Phase 1: Project Setup
-- [x] Initialize Next.js project with TypeScript
-- [x] Set up Tailwind CSS
-- [x] Configure project structure
-- [x] Set up linting and formatting
-- [x] Create basic README with setup instructions
-- [x] Configure static export
-- [x] Set up Git workflow
-      - [x] GitHub Actions for CI/CD (lint, build, test)
-      - [x] Deployment workflow to Vercel
-      - [x] Contributing guidelines
+### Phase 1: Database Foundation ✅ → 🔄 (Refactor Required)
+**Migration from external services to native data handling**
+- [x] ~~Initialize Next.js project~~ (Existing)
+- [x] ~~Set up Tailwind CSS~~ (Existing)
+- [x] ~~Configure TypeScript~~ (Existing)
+- [ ] **NEW:** Set up PostgreSQL with Prisma ORM
+  - [ ] Create Prisma schema with multi-project data model
+  - [ ] Set up database connection and migrations
+  - [ ] Create seed data for development
+- [ ] **NEW:** Add Clerk authentication
+  - [ ] Configure Clerk for admin access
+  - [ ] Protect admin routes
+- [ ] **MIGRATE:** Convert existing analytics from Plausible-only to hybrid
+  - [ ] Enhance existing `analytics.ts` for first-party tracking
+  - [ ] Keep Plausible as optional external analytics
+  - [ ] Add database storage for analytics events
 
-### Phase 2: Core Components
-- [x] Create responsive layout component
-  - [x] Header section
-  - [x] Hero section
-  - [x] Features/Benefits section
-  - [x] Email sign-up section
-  - [x] Footer
-- [x] Implement email capture form with Formspree
-  - [x] Form validation
-  - [x] Success/error states
-  - [x] Anti-spam measures
-- [x] Add SEO metadata
-  - [x] Basic meta tags
-  - [x] Open Graph tags for social media
-  - [x] Twitter card metadata
+### Phase 2: API Layer & Form Handling ✅ → 🔄 (Major Refactor)
+**Replace Formspree with native form handling**
+- [ ] **NEW:** Create API routes for form submissions
+  - [ ] `/api/form/[slug]` - Handle project-specific form submissions
+  - [ ] Store submissions in database instead of Formspree
+  - [ ] Implement email notifications for new submissions
+- [ ] **NEW:** Create analytics API endpoints
+  - [ ] `/api/analytics` - Track page views and events
+  - [ ] Implement privacy-preserving IP hashing
+  - [ ] Store events in database for dashboard viewing
+- [ ] **NEW:** Create project management APIs
+  - [ ] CRUD operations for projects
+  - [ ] Page configuration management
+  - [ ] Form submission retrieval
+- [ ] **MIGRATE:** Adapt existing EmailSignup component
+  - [ ] Update to use new native API instead of Formspree
+  - [ ] Maintain existing validation and UX
+  - [ ] Add project-aware form handling
 
-### Phase 3: Analytics & Testing
-- [x] Integrate Plausible Analytics
-- [x] Set up A/B testing framework
-  - [x] Implement variant display logic
-  - [x] Set up tracking for different variants
-  - [x] Create configuration for easy variant setup
-- [x] Set up testing environment
-  - [x] Configure Jest with Next.js
-  - [x] Write tests for components
-  - [x] Set up CI test workflow
+### Phase 3: Multi-Project Landing Pages ✅ → ✅ (COMPLETED)
+**Transform single page to dynamic template system**
+- [x] **NEW:** Create dynamic project routing
+  - [x] `/p/[slug]` - Project-specific landing pages
+  - [x] Load project configuration from database
+  - [x] Render landing page based on stored template config
+- [x] **MIGRATE:** Convert existing landing page to template
+  - [x] Extract current page content to configurable template
+  - [x] Make hero, features, CTA sections data-driven
+  - [x] Preserve existing responsive design and styling
+- [ ] **ENHANCE:** Extend A/B testing for multi-project
+  - [ ] Adapt existing A/B testing utilities
+  - [ ] Make A/B variants project-specific
+  - [ ] Track variant performance per project
+- [x] **NEW:** Implement custom domain routing (basic)
+  - [x] Domain-to-project mapping in database
+  - [x] Routing logic for custom domains
+  - [x] DNS configuration documentation
 
-### Phase 4: Styling & Responsiveness
-- [x] Implement base styling with Tailwind
-- [x] Create responsive designs for:
-  - [x] Desktop view
-  - [x] Tablet view
-  - [x] Mobile view
-- [x] Ensure consistent spacing and typography
-- [x] Add placeholder graphics/illustrations
-- [x] Verify successful build process
+### Phase 4: Admin Dashboard 🆕
+**Complete admin interface for project management**
+- [ ] **NEW:** Admin layout and navigation
+  - [ ] Protected admin routes with Clerk
+  - [ ] Dashboard navigation and layout
+  - [ ] Responsive admin interface
+- [ ] **NEW:** Project management interface
+  - [ ] Project list view with metrics
+  - [ ] Create/edit project forms
+  - [ ] Project configuration interface (template & design config)
+  - [ ] Project status management (active/archived/graduated)
+- [ ] **NEW:** Analytics dashboard
+  - [ ] Page view and conversion metrics per project
+  - [ ] Traffic source analysis (referrers, UTM tracking)
+  - [ ] Time-based analytics charts
+  - [ ] Export capabilities for analytics data
+- [ ] **NEW:** Form submission management
+  - [ ] View submissions per project
+  - [ ] Export submissions as CSV
+  - [ ] Email notification configuration
 
-### Phase 5: Testing & Optimization
-- [ ] Cross-browser testing
-- [ ] Performance optimization
-  - [ ] Image optimization
-  - [ ] Font optimization
-  - [ ] Minimize JavaScript
-- [ ] Accessibility checks
-- [ ] SEO optimization
+### Phase 5: Testing & Migration 🔄 (Enhanced)
+**Comprehensive testing for multi-project system**
+- [ ] **MIGRATE:** Update existing tests for new architecture
+  - [ ] Update EmailSignup component tests for new API
+  - [ ] Test A/B testing utilities with multi-project support
+- [ ] **NEW:** Database and API testing
+  - [ ] Prisma model tests
+  - [ ] API endpoint testing (form submissions, analytics)
+  - [ ] Integration tests for project workflows
+- [ ] **NEW:** Admin interface testing
+  - [ ] Component tests for admin dashboard
+  - [ ] E2E tests for project creation and management
+- [ ] **ENHANCE:** Performance optimization
+  - [ ] Database query optimization
+  - [ ] Caching strategies for landing pages
+  - [ ] Image and asset optimization
+- [ ] **EXISTING:** Cross-browser and accessibility testing
+  - [ ] Multi-device testing for both landing pages and admin
+  - [ ] Accessibility compliance (WCAG guidelines)
 
-### Phase 6: Deployment & Documentation
-- [ ] Set up Vercel deployment
-- [ ] Configure custom domain (if applicable)
-- [ ] Create comprehensive documentation
-  - [ ] Setup and deployment instructions
-  - [ ] Customization guide
-  - [ ] A/B testing instructions
-- [ ] Final QA and launch
+### Phase 6: Deployment & Production 🔄 (Enhanced)
+**Production deployment with database and multi-tenancy**
+- [ ] **NEW:** Database deployment setup
+  - [ ] Configure production PostgreSQL (Vercel Postgres or external)
+  - [ ] Set up database migrations for production
+  - [ ] Configure connection pooling and security
+- [ ] **NEW:** Environment configuration
+  - [ ] Production environment variables
+  - [ ] Clerk production configuration
+  - [ ] Email service configuration (SendGrid/Mailgun)
+- [ ] **ENHANCE:** Deployment pipeline
+  - [ ] Update existing Vercel deployment for database integration
+  - [ ] Add database migration step to CI/CD
+  - [ ] Configure custom domain routing in Vercel
+- [ ] **NEW:** Monitoring and observability
+  - [ ] Error tracking and logging
+  - [ ] Performance monitoring
+  - [ ] Database monitoring
 
 ## Configuration Requirements
-- Environment variables for:
-  - [x] Formspree endpoint
-  - [x] Plausible domain/settings
-  - [x] A/B testing parameters
+### Environment Variables:
+- [ ] `DATABASE_URL` - PostgreSQL connection string
+- [ ] `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk authentication
+- [ ] `CLERK_SECRET_KEY` - Clerk server-side key
+- [ ] `EMAIL_SERVICE_API_KEY` - SendGrid/Mailgun API key
+- [ ] `PLAUSIBLE_DOMAIN` - Optional external analytics
+- [ ] `NEXT_PUBLIC_BASE_URL` - Base URL for routing
+
+### Migration Strategy:
+1. **Parallel development**: Build new features alongside existing ones
+2. **Feature flags**: Toggle between old and new systems during transition
+3. **Data migration**: Scripts to import existing Formspree data (if applicable)
+4. **Gradual rollout**: Start with admin features, then migrate landing pages
 
 ## Future Enhancements (Post-MVP)
-- Social sharing capabilities
-- Multiple templates/themes
-- Email automation integration
-- Internationalization support
-- Advanced A/B testing metrics dashboard
+- Advanced custom domain automation with DNS API integration
+- Team collaboration features (multi-user access)
+- Advanced A/B testing with statistical significance tracking
+- Email automation workflows for lead nurturing
+- API endpoints for programmatic project creation
+- Public project directory (`/explore` page)
+- Template marketplace with multiple landing page designs
+- Integration with popular email marketing platforms
+- Webhook support for external integrations
+- Advanced analytics with funnel tracking
+
+## Success Metrics
+- **Technical**: Successful migration from external services to native platform
+- **Functional**: Ability to create and manage multiple projects with independent analytics
+- **Performance**: Sub-2s page load times for landing pages
+- **Scalability**: Support for 100+ concurrent projects
+- **Usability**: Admin dashboard completion of project setup in under 5 minutes

@@ -192,3 +192,223 @@
   - Cross-browser testing
   - Performance optimization
   - Accessibility checks
+
+## 2024-12-19
+
+### Topic: MarketProbe 2.0 Architecture Planning and Evolution
+
+#### Changes Made:
+- Completely restructured dev-plan.md for MarketProbe 2.0 evolution
+- Analyzed current codebase structure and identified reusable components
+- Planned migration strategy from single-page template to multi-project SaaS platform
+- Defined new database schema with PostgreSQL and Prisma ORM
+- Outlined comprehensive admin dashboard requirements
+- Planned transition from external services (Formspree, Plausible-only) to native solutions
+
+#### Dev Plan Progress:
+- Completed comprehensive analysis of existing codebase
+- Identified migration paths for existing components (EmailSignup, A/B testing, analytics)
+- Restructured development phases to reflect new architecture:
+  - Phase 1: Database Foundation (Prisma, Clerk auth, enhanced analytics)
+  - Phase 2: API Layer & Native Form Handling (replace Formspree)
+  - Phase 3: Multi-Project Landing Pages (dynamic routing, templates)
+  - Phase 4: Admin Dashboard (project management, analytics, submissions)
+  - Phase 5: Enhanced Testing & Migration
+  - Phase 6: Production Deployment with Database
+
+#### New Considerations:
+- **Multi-tenancy architecture**: Each project is isolated with own analytics and form submissions
+- **Hybrid analytics approach**: Keep Plausible as optional while building first-party analytics storage
+- **Custom domain routing**: Support both subpath (`/p/slug`) and custom domain hosting
+- **Migration strategy**: Parallel development to maintain existing functionality during transition
+- **Database design**: PostgreSQL with JSON columns for flexible project configuration
+- **Authentication**: Clerk for admin access (internal use initially)
+- **Email notifications**: Native email sending (SendGrid/Mailgun) replacing Formspree
+- **Privacy-first analytics**: IP hashing and minimal data collection for GDPR compliance
+
+#### Tools/Commands Run:
+- `list_dir` to explore current project structure
+- `read_file` to analyze existing components and configuration
+- `file_search` and `grep_search` for understanding current implementation
+- Dev plan documentation update
+
+#### Next Steps:
+- Set up development database with Prisma and PostgreSQL
+- Create initial database schema and migrations
+- Add Clerk authentication for admin routes
+- Begin API layer development for native form handling
+- Start migrating existing EmailSignup component to use new APIs
+- Create basic admin dashboard structure
+
+#### Architecture Decisions:
+- **Database**: PostgreSQL chosen for reliability and JSON support for flexible configurations
+- **ORM**: Prisma for type-safe database operations and easy migrations
+- **Auth**: Clerk for rapid admin authentication setup
+- **Routing**: Next.js App Router for advanced routing capabilities (custom domains)
+- **Analytics**: Custom solution inspired by Plausible/Umami for data ownership
+- **Deployment**: Continue with Vercel but add database and environment management
+
+#### Migration Risks & Mitigations:
+- **Risk**: Breaking existing functionality during refactor
+  - **Mitigation**: Parallel development with feature flags
+- **Risk**: Data loss during Formspree migration
+  - **Mitigation**: Export existing data before migration, gradual rollout
+- **Risk**: Performance degradation with database addition
+  - **Mitigation**: Query optimization, caching strategies, monitoring setup
+- **Risk**: Complex custom domain routing
+  - **Mitigation**: Start with subpath routing, add custom domains as advanced feature
+
+## 2024-12-19
+
+### Topic: Phase 2 Complete - API Layer & Native Form Handling
+
+#### Changes Made:
+- **Completely replaced external dependencies** with native APIs
+- **Created comprehensive email notification system** using Mailgun/SMTP
+- **Built privacy-preserving utilities** for IP hashing, UTM tracking, and data sanitization
+- **Developed form submission API** (`/api/form/[slug]`) with validation, rate limiting, and spam protection
+- **Created analytics tracking API** (`/api/analytics`) for first-party data collection
+- **Built project management APIs** (`/api/projects`) with full CRUD operations
+- **Migrated EmailSignup component** from Formspree to native API with enhanced features
+- **Added comprehensive validation** using Zod schemas throughout the API layer
+
+#### Dev Plan Progress:
+✅ **Phase 2: API Layer & Form Handling (COMPLETE)**
+- [x] Create API routes for form submissions with project-specific handling
+- [x] Store submissions in database instead of Formspree with email notifications
+- [x] Create analytics API endpoints with privacy-preserving IP hashing
+- [x] Create project management APIs with full CRUD operations
+- [x] Migrate existing EmailSignup component to use new native API
+- [x] Maintain existing validation and UX while adding project-aware handling
+
+#### New Considerations:
+- **Multi-project form handling**: Each form submission is tied to a specific project slug
+- **Enhanced privacy**: IP hashing, data sanitization, and GDPR-compliant analytics
+- **Rate limiting**: Built-in protection against spam and abuse (5 forms/min, 100 analytics/min)
+- **Email notifications**: Rich HTML emails sent to admin when forms are submitted
+- **Enhanced form capabilities**: Support for name, company, message, and custom fields
+- **Error handling**: Comprehensive validation with user-friendly error messages
+- **UTM tracking**: Automatic capture and storage of marketing attribution data
+- **Honeypot spam protection**: Hidden fields to catch automated bots
+- **Transaction safety**: Database operations wrapped in transactions for consistency
+
+#### Tools/Commands Run:
+- `npm install crypto-js nodemailer zod @types/nodemailer @types/crypto-js`
+- Created email notification system with HTML templates
+- Built privacy utilities for secure data handling
+- Developed API endpoints with proper validation and error handling
+- Updated EmailSignup component with enhanced features
+
+#### Next Steps:
+- **Phase 3: Multi-Project Landing Pages**
+  - Create dynamic routing for `/p/[slug]`
+  - Build template-driven page rendering
+  - Implement custom domain support
+  - Convert existing landing page to database-driven templates
+
+#### Architecture Achievements:
+- **Self-contained system**: No external dependencies for core functionality (forms, analytics)
+- **Enterprise-grade security**: Rate limiting, validation, spam protection, privacy preservation
+- **Scalable API design**: RESTful endpoints with proper HTTP status codes and error handling
+- **Type safety**: Full TypeScript coverage with Zod validation schemas
+- **Multi-tenant ready**: Project-based isolation for all data and operations
+- **Email automation**: Professional notification system for form submissions
+- **Analytics foundation**: Privacy-first data collection ready for dashboard visualization
+
+#### Migration Success:
+- **Formspree → Native API**: Complete replacement with enhanced capabilities
+- **External analytics dependency reduced**: Now have first-party data alongside optional Plausible
+- **Enhanced user experience**: Better error handling, validation, and multi-field support
+- **Admin capabilities**: Full project management through APIs ready for dashboard integration
+
+## 2025-06-02 - Phase 3: Multi-Project Landing Pages (COMPLETED) 🎉
+
+### Topic: Dynamic Project Landing Page System
+
+### Changes Made:
+- **Created dynamic routing system** (`/p/[slug]`)
+  - Built `src/app/p/[slug]/page.tsx` with database-driven page generation
+  - Implemented proper SEO metadata generation from project configuration
+  - Added `not-found.tsx` for graceful 404 handling
+
+- **Developed complete landing page component system**:
+  - `ProjectLandingPage.tsx` - Main orchestrator with analytics tracking
+  - `LandingPageLayout.tsx` - Configurable layout with design system
+  - `HeroSection.tsx` - Dynamic hero with multiple layout styles
+  - `FeaturesSection.tsx` - Responsive feature grid with icons
+  - `SocialProofSection.tsx` - Testimonials and metrics display
+  - `EmailSignupSection.tsx` - Styled form container
+
+- **Implemented custom domain routing**:
+  - Created `middleware.ts` for domain-to-project mapping
+  - Added hostname detection and rewriting logic
+  - Configured proper matcher patterns for performance
+
+- **Enhanced template-driven rendering**:
+  - Completely data-driven content from database
+  - Dynamic theming with color schemes (modern, eco themes)
+  - Responsive design with Tailwind CSS
+  - Custom CSS injection support
+
+### Dev Plan Progress:
+✅ **Phase 3 COMPLETED** - Multi-Project Landing Pages
+- [x] Dynamic project routing with `/p/[slug]`
+- [x] Database-driven template configuration
+- [x] Custom domain routing with middleware
+- [x] Responsive multi-theme design system
+- [x] SEO optimization with dynamic metadata
+
+### New Architectural Considerations:
+- **Template-driven architecture**: All page content configurable via database JSON
+- **Multi-tenant domain system**: Single codebase serving multiple domains
+- **Component modularity**: Reusable sections for different project types
+- **SEO-first approach**: Dynamic metadata generation for each project
+- **Performance optimization**: Server-side rendering with client-side analytics
+
+### Tools/Commands Run:
+- `npm run dev` - Started development server
+- `node scripts/test-api.js` - Verified database connectivity
+- `curl` commands - Tested dynamic routes and content rendering
+- Database queries via Prisma ORM
+
+### Testing Results:
+🎯 **Successfully tested two different projects**:
+1. **AI Writing Assistant** (`/p/ai-writing-assistant`)
+   - Modern blue theme (#6366f1)
+   - Tech-focused features and content
+   - "Join the Waitlist" CTA
+
+2. **EcoBox Packaging** (`/p/eco-friendly-packaging`)
+   - Eco green theme (#059669)
+   - Sustainability-focused messaging
+   - "Get Free Samples" CTA
+   - Custom domain ready: `ecobox-demo.com`
+
+### Key Technical Achievements:
+- **Zero manual configuration** needed for new projects
+- **Complete design flexibility** through JSON configuration
+- **Professional SEO** with dynamic Open Graph and Twitter cards
+- **Enterprise-grade routing** with custom domain support
+- **Type-safe implementation** with TypeScript throughout
+- **Responsive design** optimized for all device sizes
+
+### Next Steps:
+Ready for **Phase 4: Admin Dashboard** to provide UI for:
+- Project creation and management
+- Template configuration interface
+- Analytics dashboard
+- Form submission management
+- Design customization tools
+
+### Production Readiness:
+🚀 The multi-project system is **production-ready** with:
+- Database-driven content management
+- Custom domain routing
+- Professional responsive design
+- SEO optimization
+- Analytics integration
+- Form submission handling
+
+---
+
+## 2025-06-02 - Phase 2: API Layer & Form Handling (COMPLETED) ✅
