@@ -1,24 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
-import { prisma } from '@/lib/db'
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const { userId } = await auth()
+    const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json()
-    const { title, slug, description, domain, status } = body
+    const body = await request.json();
+    const { title, slug, description, domain, status } = body;
 
     // Validation
     if (!title || !slug) {
-      return NextResponse.json(
-        { error: 'Title and slug are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Title and slug are required' }, { status: 400 });
     }
 
     // Validate slug format
@@ -26,32 +23,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Slug can only contain lowercase letters, numbers, and hyphens' },
         { status: 400 }
-      )
+      );
     }
 
     // Check if slug is already taken
     const existingProject = await prisma.project.findUnique({
-      where: { slug }
-    })
+      where: { slug },
+    });
 
     if (existingProject) {
       return NextResponse.json(
         { error: 'A project with this slug already exists' },
         { status: 400 }
-      )
+      );
     }
 
     // Check if domain is already taken (if provided)
     if (domain) {
       const existingDomain = await prisma.project.findUnique({
-        where: { domain }
-      })
+        where: { domain },
+      });
 
       if (existingDomain) {
         return NextResponse.json(
           { error: 'A project with this domain already exists' },
           { status: 400 }
-        )
+        );
       }
 
       // Validate domain format
@@ -59,7 +56,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           { error: 'Please enter a valid domain (e.g., example.com)' },
           { status: 400 }
-        )
+        );
       }
     }
 
@@ -70,9 +67,9 @@ export async function POST(request: NextRequest) {
         slug,
         description: description || null,
         domain: domain || null,
-        status: status || 'DRAFT'
-      }
-    })
+        status: status || 'DRAFT',
+      },
+    });
 
     // Create default page config for the project
     await prisma.pageConfig.create({
@@ -82,49 +79,46 @@ export async function POST(request: NextRequest) {
           hero: {
             headline: title,
             subheadline: description || `Validate your ${title} idea with real users`,
-            ctaText: 'Join Waitlist'
+            ctaText: 'Join Waitlist',
           },
           features: [
             {
               title: 'Feature 1',
-              description: 'Describe your first key feature'
+              description: 'Describe your first key feature',
             },
             {
               title: 'Feature 2',
-              description: 'Describe your second key feature'
+              description: 'Describe your second key feature',
             },
             {
               title: 'Feature 3',
-              description: 'Describe your third key feature'
-            }
+              description: 'Describe your third key feature',
+            },
           ],
           form: {
             fields: ['email'],
             submitText: 'Get Early Access',
-            successMessage: 'Thanks! We\'ll be in touch soon.'
-          }
+            successMessage: "Thanks! We'll be in touch soon.",
+          },
         },
         designConfig: {
           theme: 'default',
           colors: {
             primary: '#3B82F6',
-            secondary: '#1F2937'
+            secondary: '#1F2937',
           },
           fonts: {
             heading: 'Inter',
-            body: 'Inter'
-          }
+            body: 'Inter',
+          },
         },
-        isActive: true
-      }
-    })
+        isActive: true,
+      },
+    });
 
-    return NextResponse.json(project, { status: 201 })
+    return NextResponse.json(project, { status: 201 });
   } catch (error) {
-    console.error('Error creating project:', error)
-    return NextResponse.json(
-      { error: 'Failed to create project' },
-      { status: 500 }
-    )
+    console.error('Error creating project:', error);
+    return NextResponse.json({ error: 'Failed to create project' }, { status: 500 });
   }
 }

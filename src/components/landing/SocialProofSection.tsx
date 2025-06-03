@@ -1,34 +1,30 @@
-import { DesignConfig } from '@/types/database'
+import { DesignConfig } from '@/types/database';
 
 interface Testimonial {
-  name: string
-  company?: string
-  text: string
-  avatar?: string
+  name: string;
+  company?: string;
+  text: string;
+  avatar?: string;
 }
 
 interface SocialProof {
-  testimonials?: Testimonial[]
-  metrics?: { [key: string]: string }
+  testimonials?: Testimonial[];
+  metrics?: { [key: string]: string };
 }
 
 interface SocialProofSectionProps {
-  socialProof: SocialProof
-  designConfig: DesignConfig
+  socialProof: SocialProof;
+  designConfig: DesignConfig;
 }
 
 export default function SocialProofSection({ socialProof, designConfig }: SocialProofSectionProps) {
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
-
         {/* Metrics */}
         {socialProof.metrics && Object.keys(socialProof.metrics).length > 0 && (
           <div className="text-center mb-16">
-            <h2
-              className="text-2xl font-bold mb-8"
-              style={{ color: designConfig.textColor }}
-            >
+            <h2 className="text-2xl font-bold mb-8" style={{ color: designConfig.textColor }}>
               Trusted by thousands
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -58,11 +54,15 @@ export default function SocialProofSection({ socialProof, designConfig }: Social
             >
               What our customers say
             </h2>
-            <div className={`grid gap-8 ${
-              socialProof.testimonials.length === 1 ? 'grid-cols-1 max-w-2xl mx-auto' :
-              socialProof.testimonials.length === 2 ? 'grid-cols-1 md:grid-cols-2' :
-              'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-            }`}>
+            <div
+              className={`grid gap-8 ${
+                socialProof.testimonials.length === 1
+                  ? 'grid-cols-1 max-w-2xl mx-auto'
+                  : socialProof.testimonials.length === 2
+                    ? 'grid-cols-1 md:grid-cols-2'
+                    : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+              }`}
+            >
               {socialProof.testimonials.map((testimonial, index) => (
                 <div
                   key={index}
@@ -75,11 +75,9 @@ export default function SocialProofSection({ socialProof, designConfig }: Social
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                     </svg>
-                    <p className="text-gray-700 italic leading-relaxed">
-                      "{testimonial.text}"
-                    </p>
+                    <p className="text-gray-700 italic leading-relaxed">"{testimonial.text}"</p>
                   </div>
 
                   {/* Author */}
@@ -99,16 +97,11 @@ export default function SocialProofSection({ socialProof, designConfig }: Social
                       </div>
                     )}
                     <div>
-                      <div
-                        className="font-semibold"
-                        style={{ color: designConfig.textColor }}
-                      >
+                      <div className="font-semibold" style={{ color: designConfig.textColor }}>
                         {testimonial.name}
                       </div>
                       {testimonial.company && (
-                        <div className="text-sm text-gray-500">
-                          {testimonial.company}
-                        </div>
+                        <div className="text-sm text-gray-500">{testimonial.company}</div>
                       )}
                     </div>
                   </div>
@@ -119,5 +112,5 @@ export default function SocialProofSection({ socialProof, designConfig }: Social
         )}
       </div>
     </section>
-  )
+  );
 }

@@ -178,9 +178,10 @@ describe('DeleteProjectButton Component', () => {
       let resolvePromise: (value: any) => void;
 
       mockFetch.mockImplementationOnce(
-        () => new Promise(resolve => {
-          resolvePromise = resolve;
-        })
+        () =>
+          new Promise(resolve => {
+            resolvePromise = resolve;
+          })
       );
 
       render(<DeleteProjectButton project={mockProject} />);
@@ -201,9 +202,10 @@ describe('DeleteProjectButton Component', () => {
       let resolvePromise: (value: any) => void;
 
       mockFetch.mockImplementationOnce(
-        () => new Promise(resolve => {
-          resolvePromise = resolve;
-        })
+        () =>
+          new Promise(resolve => {
+            resolvePromise = resolve;
+          })
       );
 
       render(<DeleteProjectButton project={mockProject} />);

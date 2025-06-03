@@ -30,10 +30,11 @@ describe('EmailSignup Component', () => {
       if (url.includes('/api/form/')) {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({
-            success: true,
-            message: 'Thank you! You have been added to our waitlist.',
-          }),
+          json: () =>
+            Promise.resolve({
+              success: true,
+              message: 'Thank you! You have been added to our waitlist.',
+            }),
         });
       }
       // Analytics endpoint (should not affect UX even if it fails)
@@ -94,12 +95,7 @@ describe('EmailSignup Component', () => {
         },
       ];
 
-      render(
-        <EmailSignup
-          {...defaultProps}
-          customFields={customFields}
-        />
-      );
+      render(<EmailSignup {...defaultProps} customFields={customFields} />);
 
       expect(screen.getByPlaceholderText('Your phone number')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('Your website URL')).toBeInTheDocument();
@@ -166,12 +162,7 @@ describe('EmailSignup Component', () => {
         },
       ];
 
-      const { container } = render(
-        <EmailSignup
-          {...defaultProps}
-          customFields={customFields}
-        />
-      );
+      const { container } = render(<EmailSignup {...defaultProps} customFields={customFields} />);
 
       const emailInput = screen.getByPlaceholderText('Enter your email');
       const nameInput = screen.getByPlaceholderText('Your name');
@@ -235,24 +226,23 @@ describe('EmailSignup Component', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Thank you! You have been added to our waitlist.')).toBeInTheDocument();
+        expect(
+          screen.getByText('Thank you! You have been added to our waitlist.')
+        ).toBeInTheDocument();
       });
     });
 
     it('submits form with all fields', async () => {
       const user = userEvent.setup();
-      render(
-        <EmailSignup
-          {...defaultProps}
-          showCompanyField={true}
-          showMessageField={true}
-        />
-      );
+      render(<EmailSignup {...defaultProps} showCompanyField={true} showMessageField={true} />);
 
       await user.type(screen.getByPlaceholderText('Enter your email'), 'test@example.com');
       await user.type(screen.getByPlaceholderText('Your name'), 'John Doe');
       await user.type(screen.getByPlaceholderText('Company name'), 'Test Company');
-      await user.type(screen.getByPlaceholderText('Tell us about your interest...'), 'Very interested');
+      await user.type(
+        screen.getByPlaceholderText('Tell us about your interest...'),
+        'Very interested'
+      );
       await user.click(screen.getByRole('button'));
 
       await waitFor(() => {
@@ -331,7 +321,9 @@ describe('EmailSignup Component', () => {
       await user.click(screen.getByRole('button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Thank you! You have been added to our waitlist.')).toBeInTheDocument();
+        expect(
+          screen.getByText('Thank you! You have been added to our waitlist.')
+        ).toBeInTheDocument();
       });
 
       // Form should be reset
@@ -346,10 +338,11 @@ describe('EmailSignup Component', () => {
       mockFetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: false,
-          json: () => Promise.resolve({
-            success: false,
-            error: 'Server error occurred',
-          }),
+          json: () =>
+            Promise.resolve({
+              success: false,
+              error: 'Server error occurred',
+            }),
         })
       );
 
@@ -368,10 +361,11 @@ describe('EmailSignup Component', () => {
       mockFetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: false,
-          json: () => Promise.resolve({
-            success: false,
-            error: 'Rate limit exceeded',
-          }),
+          json: () =>
+            Promise.resolve({
+              success: false,
+              error: 'Rate limit exceeded',
+            }),
         })
       );
 
@@ -381,7 +375,9 @@ describe('EmailSignup Component', () => {
       await user.click(screen.getByRole('button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Too many submissions. Please try again in a minute.')).toBeInTheDocument();
+        expect(
+          screen.getByText('Too many submissions. Please try again in a minute.')
+        ).toBeInTheDocument();
       });
     });
 
@@ -390,10 +386,11 @@ describe('EmailSignup Component', () => {
       mockFetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: false,
-          json: () => Promise.resolve({
-            success: false,
-            error: 'This email has already been submitted',
-          }),
+          json: () =>
+            Promise.resolve({
+              success: false,
+              error: 'This email has already been submitted',
+            }),
         })
       );
 
@@ -403,7 +400,9 @@ describe('EmailSignup Component', () => {
       await user.click(screen.getByRole('button'));
 
       await waitFor(() => {
-        expect(screen.getByText('This email has already been submitted for this project.')).toBeInTheDocument();
+        expect(
+          screen.getByText('This email has already been submitted for this project.')
+        ).toBeInTheDocument();
       });
     });
 
@@ -423,14 +422,15 @@ describe('EmailSignup Component', () => {
 
     it('continues UX flow even if analytics fails', async () => {
       const user = userEvent.setup();
-      mockFetch.mockImplementation((url) => {
+      mockFetch.mockImplementation(url => {
         if (url.includes('/api/form/')) {
           return Promise.resolve({
             ok: true,
-            json: () => Promise.resolve({
-              success: true,
-              message: 'Thank you! You have been added to our waitlist.',
-            }),
+            json: () =>
+              Promise.resolve({
+                success: true,
+                message: 'Thank you! You have been added to our waitlist.',
+              }),
           });
         }
         if (url.includes('/api/analytics')) {
@@ -446,7 +446,9 @@ describe('EmailSignup Component', () => {
 
       // Form submission should still succeed
       await waitFor(() => {
-        expect(screen.getByText('Thank you! You have been added to our waitlist.')).toBeInTheDocument();
+        expect(
+          screen.getByText('Thank you! You have been added to our waitlist.')
+        ).toBeInTheDocument();
       });
     });
   });
@@ -456,10 +458,17 @@ describe('EmailSignup Component', () => {
       const user = userEvent.setup();
       // Mock a delayed response
       mockFetch.mockImplementationOnce(
-        () => new Promise(resolve => setTimeout(() => resolve({
-          ok: true,
-          json: () => Promise.resolve({ success: true, message: 'Success!' }),
-        }), 100))
+        () =>
+          new Promise(resolve =>
+            setTimeout(
+              () =>
+                resolve({
+                  ok: true,
+                  json: () => Promise.resolve({ success: true, message: 'Success!' }),
+                }),
+              100
+            )
+          )
       );
 
       render(<EmailSignup {...defaultProps} showNameField={false} />);
@@ -482,9 +491,10 @@ describe('EmailSignup Component', () => {
       let resolvePromise: (value: any) => void;
 
       mockFetch.mockImplementationOnce(
-        () => new Promise(resolve => {
-          resolvePromise = resolve;
-        })
+        () =>
+          new Promise(resolve => {
+            resolvePromise = resolve;
+          })
       );
 
       render(<EmailSignup {...defaultProps} />);

@@ -1,36 +1,36 @@
-'use client'
+'use client';
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface ConversionChartProps {
-  pageViews: number
-  formSubmissions: number
+  pageViews: number;
+  formSubmissions: number;
 }
 
 export default function ConversionChart({ pageViews, formSubmissions }: ConversionChartProps) {
-  const conversionRate = pageViews > 0 ? (formSubmissions / pageViews) * 100 : 0
-  const bounceRate = 100 - conversionRate
+  const conversionRate = pageViews > 0 ? (formSubmissions / pageViews) * 100 : 0;
+  const bounceRate = 100 - conversionRate;
 
   const data = [
     {
       name: 'Converted',
       value: formSubmissions,
       percentage: conversionRate.toFixed(1),
-      color: '#10b981'
+      color: '#10b981',
     },
     {
       name: 'Bounced',
       value: pageViews - formSubmissions,
       percentage: bounceRate.toFixed(1),
-      color: '#e5e7eb'
-    }
-  ]
+      color: '#e5e7eb',
+    },
+  ];
 
-  const COLORS = ['#10b981', '#e5e7eb']
+  const COLORS = ['#10b981', '#e5e7eb'];
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload
+      const data = payload[0].payload;
       return (
         <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
           <p className="font-medium text-gray-900">{data.name}</p>
@@ -38,10 +38,10 @@ export default function ConversionChart({ pageViews, formSubmissions }: Conversi
             {data.value} visitors ({data.percentage}%)
           </p>
         </div>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
@@ -112,5 +112,5 @@ export default function ConversionChart({ pageViews, formSubmissions }: Conversi
         </div>
       )}
     </div>
-  )
+  );
 }

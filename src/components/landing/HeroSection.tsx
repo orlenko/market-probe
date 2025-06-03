@@ -1,17 +1,13 @@
-import { Project, TemplateConfig, DesignConfig } from '@/types/database'
+import { Project, TemplateConfig, DesignConfig } from '@/types/database';
 
 interface HeroSectionProps {
-  templateConfig: TemplateConfig
-  designConfig: DesignConfig
-  project: Project
+  templateConfig: TemplateConfig;
+  designConfig: DesignConfig;
+  project: Project;
 }
 
-export default function HeroSection({
-  templateConfig,
-  designConfig,
-  project
-}: HeroSectionProps) {
-  const heroStyle = designConfig.hero?.style || 'centered'
+export default function HeroSection({ templateConfig, designConfig, project }: HeroSectionProps) {
+  const heroStyle = designConfig.hero?.style || 'centered';
 
   return (
     <section
@@ -24,7 +20,7 @@ export default function HeroSection({
           : undefined,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
       }}
     >
       {/* Background overlay for better text readability */}
@@ -47,7 +43,7 @@ export default function HeroSection({
               style={{
                 width: designConfig.logo.width || 'auto',
                 height: designConfig.logo.height || 60,
-                maxWidth: '200px'
+                maxWidth: '200px',
               }}
             />
           </div>
@@ -57,7 +53,9 @@ export default function HeroSection({
           {/* Headline */}
           <h1
             className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6"
-            style={{ color: designConfig.hero?.backgroundImage ? '#ffffff' : designConfig.textColor }}
+            style={{
+              color: designConfig.hero?.backgroundImage ? '#ffffff' : designConfig.textColor,
+            }}
           >
             {templateConfig.headline}
           </h1>
@@ -68,7 +66,7 @@ export default function HeroSection({
             style={{
               color: designConfig.hero?.backgroundImage
                 ? 'rgba(255, 255, 255, 0.9)'
-                : 'rgba(107, 114, 128, 1)'
+                : 'rgba(107, 114, 128, 1)',
             }}
           >
             {templateConfig.subheadline}
@@ -80,20 +78,21 @@ export default function HeroSection({
               onClick={() => {
                 // Scroll to signup section
                 document.getElementById('signup-section')?.scrollIntoView({
-                  behavior: 'smooth'
-                })
+                  behavior: 'smooth',
+                });
               }}
               className="px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-200 hover:shadow-lg transform hover:-translate-y-1"
               style={{
                 backgroundColor: designConfig.primaryColor,
                 color: '#ffffff',
-                borderColor: designConfig.primaryColor
+                borderColor: designConfig.primaryColor,
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = designConfig.secondaryColor || designConfig.primaryColor
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor =
+                  designConfig.secondaryColor || designConfig.primaryColor;
               }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = designConfig.primaryColor
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = designConfig.primaryColor;
               }}
             >
               {templateConfig.ctaText}
@@ -105,12 +104,7 @@ export default function HeroSection({
         {heroStyle === 'split' && (
           <div className="lg:flex-1 mt-12 lg:mt-0">
             {designConfig.hero?.backgroundVideo ? (
-              <video
-                autoPlay
-                muted
-                loop
-                className="w-full rounded-lg shadow-2xl"
-              >
+              <video autoPlay muted loop className="w-full rounded-lg shadow-2xl">
                 <source src={designConfig.hero.backgroundVideo} type="video/mp4" />
               </video>
             ) : (
@@ -122,5 +116,5 @@ export default function HeroSection({
         )}
       </div>
     </section>
-  )
+  );
 }

@@ -2,26 +2,26 @@ import {
   ChartBarIcon,
   UserGroupIcon,
   CursorArrowRaysIcon,
-  ArrowTrendingUpIcon
-} from '@heroicons/react/24/outline'
+  ArrowTrendingUpIcon,
+} from '@heroicons/react/24/outline';
 
 interface AnalyticsOverviewProps {
   data: {
-    pageViews: number
-    formSubmissions: number
-    conversionRate: number
-    period: { days: number; from: Date; to: Date }
-  }
+    pageViews: number;
+    formSubmissions: number;
+    conversionRate: number;
+    period: { days: number; from: Date; to: Date };
+  };
 }
 
 export default function AnalyticsOverview({ data }: AnalyticsOverviewProps) {
   const formatNumber = (num: number) => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
-    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
-    return num.toString()
-  }
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
+  };
 
-  const formatPercentage = (num: number) => `${num.toFixed(1)}%`
+  const formatPercentage = (num: number) => `${num.toFixed(1)}%`;
 
   const metrics = [
     {
@@ -30,7 +30,7 @@ export default function AnalyticsOverview({ data }: AnalyticsOverviewProps) {
       icon: ChartBarIcon,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
-      description: `In the last ${data.period.days} days`
+      description: `In the last ${data.period.days} days`,
     },
     {
       title: 'Form Submissions',
@@ -38,7 +38,7 @@ export default function AnalyticsOverview({ data }: AnalyticsOverviewProps) {
       icon: UserGroupIcon,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
-      description: `In the last ${data.period.days} days`
+      description: `In the last ${data.period.days} days`,
     },
     {
       title: 'Conversion Rate',
@@ -46,21 +46,22 @@ export default function AnalyticsOverview({ data }: AnalyticsOverviewProps) {
       icon: ArrowTrendingUpIcon,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
-      description: 'Submissions / Page Views'
+      description: 'Submissions / Page Views',
     },
     {
       title: 'Click-through',
-      value: data.pageViews > 0 ? formatPercentage((data.formSubmissions / data.pageViews) * 100) : '0%',
+      value:
+        data.pageViews > 0 ? formatPercentage((data.formSubmissions / data.pageViews) * 100) : '0%',
       icon: CursorArrowRaysIcon,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
-      description: 'Engagement rate'
-    }
-  ]
+      description: 'Engagement rate',
+    },
+  ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {metrics.map((metric) => (
+      {metrics.map(metric => (
         <div key={metric.title} className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className={`${metric.bgColor} rounded-lg p-3`}>
@@ -77,5 +78,5 @@ export default function AnalyticsOverview({ data }: AnalyticsOverviewProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }

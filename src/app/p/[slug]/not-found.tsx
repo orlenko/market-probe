@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function NotFound() {
   return (
@@ -8,9 +8,7 @@ export default function NotFound() {
           <h1 className="text-6xl font-bold text-gray-200">404</h1>
         </div>
 
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          Project Not Found
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Project Not Found</h2>
 
         <p className="text-gray-600 mb-8">
           The project you're looking for doesn't exist or has been moved.
@@ -31,5 +29,5 @@ export default function NotFound() {
         </div>
       </div>
     </div>
-  )
+  );
 }

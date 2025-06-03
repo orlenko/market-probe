@@ -1,4 +1,4 @@
-import { SignIn } from '@clerk/nextjs'
+import { SignIn } from '@clerk/nextjs';
 
 export default function Page() {
   return (
@@ -23,12 +23,12 @@ export default function Page() {
             afterSignInUrl="/admin"
             appearance={{
               elements: {
-                formButtonPrimary: 'bg-blue-600 hover:bg-blue-700 text-sm normal-case'
-              }
+                formButtonPrimary: 'bg-blue-600 hover:bg-blue-700 text-sm normal-case',
+              },
             }}
           />
         </div>
       </div>
     </div>
-  )
+  );
 }

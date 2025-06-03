@@ -1,8 +1,8 @@
-import { Suspense } from 'react'
-import { prisma } from '@/lib/db'
-import { ProjectWithCounts, FormSubmissionWithProject } from '@/types/admin'
+import { Suspense } from 'react';
+import { prisma } from '@/lib/db';
+import { ProjectWithCounts, FormSubmissionWithProject } from '@/types/admin';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 async function getDashboardData() {
   // Get project statistics
@@ -12,23 +12,23 @@ async function getDashboardData() {
     totalSubmissions,
     totalPageViews,
     recentProjects,
-    recentSubmissions
+    recentSubmissions,
   ] = await Promise.all([
     // Total projects count
     prisma.project.count(),
 
     // Active projects count
     prisma.project.count({
-      where: { status: 'ACTIVE' }
+      where: { status: 'ACTIVE' },
     }),
 
     // Total form submissions (last 30 days)
     prisma.formSubmission.count({
       where: {
         submittedAt: {
-          gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-        }
-      }
+          gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        },
+      },
     }),
 
     // Total page views (last 30 days)
@@ -36,9 +36,9 @@ async function getDashboardData() {
       where: {
         eventType: 'PAGE_VIEW',
         timestamp: {
-          gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-        }
-      }
+          gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        },
+      },
     }),
 
     // Recent projects
@@ -49,10 +49,10 @@ async function getDashboardData() {
         _count: {
           select: {
             formSubmissions: true,
-            analyticsEvents: true
-          }
-        }
-      }
+            analyticsEvents: true,
+          },
+        },
+      },
     }),
 
     // Recent form submissions
@@ -63,27 +63,27 @@ async function getDashboardData() {
         project: {
           select: {
             title: true,
-            slug: true
-          }
-        }
-      }
-    })
-  ])
+            slug: true,
+          },
+        },
+      },
+    }),
+  ]);
 
   return {
     stats: {
       totalProjects,
       activeProjects,
       totalSubmissions,
-      totalPageViews
+      totalPageViews,
     },
     recentProjects: recentProjects as ProjectWithCounts[],
-    recentSubmissions: recentSubmissions as FormSubmissionWithProject[]
-  }
+    recentSubmissions: recentSubmissions as FormSubmissionWithProject[],
+  };
 }
 
 export default async function AdminDashboard() {
-  const data = await getDashboardData()
+  const data = await getDashboardData();
 
   return (
     <div className="space-y-6">
@@ -166,9 +166,13 @@ export default async function AdminDashboard() {
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
                   <span>{project._count.formSubmissions} submissions</span>
                   <span>{project._count.analyticsEvents} page views</span>
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                    project.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                  }`}>
+                  <span
+                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                      project.status === 'ACTIVE'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
                     {project.status}
                   </span>
                 </div>
@@ -192,17 +196,16 @@ export default async function AdminDashboard() {
                     {(submission.formData as any)?.email}
                   </h4>
                   <p className="text-sm text-gray-500">
-                    {submission.project.title} • {new Date(submission.submittedAt).toLocaleDateString()}
+                    {submission.project.title} •{' '}
+                    {new Date(submission.submittedAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="text-sm text-gray-500">
-                  {(submission.formData as any)?.name}
-                </div>
+                <div className="text-sm text-gray-500">{(submission.formData as any)?.name}</div>
               </div>
             </div>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }

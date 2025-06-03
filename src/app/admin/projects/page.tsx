@@ -1,12 +1,12 @@
-import { Suspense } from 'react'
-import Link from 'next/link'
-import { prisma } from '@/lib/db'
-import { PlusIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
-import { ProjectWithCounts } from '@/types/admin'
-import ProjectStatusBadge from '@/components/admin/ProjectStatusBadge'
-import DeleteProjectButton from '@/components/admin/DeleteProjectButton'
+import { Suspense } from 'react';
+import Link from 'next/link';
+import { prisma } from '@/lib/db';
+import { PlusIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ProjectWithCounts } from '@/types/admin';
+import ProjectStatusBadge from '@/components/admin/ProjectStatusBadge';
+import DeleteProjectButton from '@/components/admin/DeleteProjectButton';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 async function getProjects() {
   const projects = await prisma.project.findMany({
@@ -14,18 +14,18 @@ async function getProjects() {
       _count: {
         select: {
           formSubmissions: true,
-          analyticsEvents: true
-        }
-      }
+          analyticsEvents: true,
+        },
+      },
     },
-    orderBy: { updatedAt: 'desc' }
-  })
+    orderBy: { updatedAt: 'desc' },
+  });
 
-  return projects as ProjectWithCounts[]
+  return projects as ProjectWithCounts[];
 }
 
 export default async function ProjectsPage() {
-  const projects = await getProjects()
+  const projects = await getProjects();
 
   return (
     <div className="space-y-6">
@@ -51,9 +51,7 @@ export default async function ProjectsPage() {
       {/* Projects Table */}
       <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">
-            All Projects ({projects.length})
-          </h3>
+          <h3 className="text-lg font-medium text-gray-900">All Projects ({projects.length})</h3>
         </div>
 
         {projects.length === 0 ? (
@@ -118,17 +116,13 @@ export default async function ProjectsPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {projects.map((project) => (
+                {projects.map(project => (
                   <tr key={project.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {project.title}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            /{project.slug}
-                          </div>
+                          <div className="text-sm font-medium text-gray-900">{project.title}</div>
+                          <div className="text-sm text-gray-500">/{project.slug}</div>
                         </div>
                       </div>
                     </td>
@@ -186,5 +180,5 @@ export default async function ProjectsPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -1,18 +1,18 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
-const isProtectedRoute = createRouteMatcher(['/admin(.*)'])
+const isProtectedRoute = createRouteMatcher(['/admin(.*)']);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
   // Protect admin routes
   if (isProtectedRoute(req)) {
-    await auth.protect()
+    await auth.protect();
   }
 
   // Custom domain routing logic
-  const hostname = req.headers.get('host') || ''
-  const url = req.nextUrl
+  const hostname = req.headers.get('host') || '';
+  const url = req.nextUrl;
 
   // Skip middleware for:
   // - Non-admin API routes
@@ -24,34 +24,34 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     url.pathname.startsWith('/favicon.ico') ||
     url.pathname.includes('.')
   ) {
-    return NextResponse.next()
+    return NextResponse.next();
   }
 
   // Skip for localhost development and main domain
-  const isLocalhost = hostname.includes('localhost') || hostname.includes('127.0.0.1')
-  const isMainDomain = hostname === process.env.NEXT_PUBLIC_MAIN_DOMAIN
+  const isLocalhost = hostname.includes('localhost') || hostname.includes('127.0.0.1');
+  const isMainDomain = hostname === process.env.NEXT_PUBLIC_MAIN_DOMAIN;
 
   if (isLocalhost || isMainDomain) {
-    return NextResponse.next()
+    return NextResponse.next();
   }
 
   // Check if this hostname is a custom domain for a project
   try {
-    const project = await db.project.findByDomain(hostname)
+    const project = await db.project.findByDomain(hostname);
 
     if (project && project.status === 'ACTIVE') {
       // Rewrite to the project page
-      const rewriteUrl = new URL(`/p/${project.slug}${url.pathname}${url.search}`, req.url)
-      return NextResponse.rewrite(rewriteUrl)
+      const rewriteUrl = new URL(`/p/${project.slug}${url.pathname}${url.search}`, req.url);
+      return NextResponse.rewrite(rewriteUrl);
     }
   } catch (error) {
-    console.error('Middleware error:', error)
+    console.error('Middleware error:', error);
     // Continue to normal routing if database error
   }
 
   // If no custom domain found, continue with normal routing
-  return NextResponse.next()
-})
+  return NextResponse.next();
+});
 
 export const config = {
   matcher: [
@@ -63,6 +63,6 @@ export const config = {
      * - favicon.ico (favicon file)
      */
     '/((?!api/(?!admin).*|_next/static|_next/image|favicon.ico).*)',
-    '/api/admin/(.*)'
+    '/api/admin/(.*)',
   ],
-}
+};

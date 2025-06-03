@@ -1,5 +1,5 @@
-import nodemailer from 'nodemailer'
-import type { FormData } from '@/types/database'
+import nodemailer from 'nodemailer';
+import type { FormData } from '@/types/database';
 
 // Email configuration
 const emailConfig = {
@@ -21,44 +21,44 @@ const emailConfig = {
       pass: process.env.SMTP_PASS,
     },
   },
-}
+};
 
 // Create transporter based on available configuration
 function createTransporter() {
   if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
-    return nodemailer.createTransport(emailConfig.mailgun)
+    return nodemailer.createTransport(emailConfig.mailgun);
   } else if (process.env.SMTP_HOST && process.env.SMTP_USER) {
-    return nodemailer.createTransport(emailConfig.smtp)
+    return nodemailer.createTransport(emailConfig.smtp);
   } else {
-    console.warn('No email configuration found. Emails will be logged to console.')
-    return null
+    console.warn('No email configuration found. Emails will be logged to console.');
+    return null;
   }
 }
 
-const transporter = createTransporter()
+const transporter = createTransporter();
 
 // Email templates
 interface EmailTemplate {
-  subject: string
-  html: string
-  text: string
+  subject: string;
+  html: string;
+  text: string;
 }
 
 function createFormSubmissionEmail(
   projectTitle: string,
   formData: FormData,
   submissionDetails: {
-    submittedAt: Date
-    referrer?: string
-    utmSource?: string
-    utmMedium?: string
-    utmCampaign?: string
+    submittedAt: Date;
+    referrer?: string;
+    utmSource?: string;
+    utmMedium?: string;
+    utmCampaign?: string;
   }
 ): EmailTemplate {
-  const { email, name, company, message, ...customFields } = formData
-  const { submittedAt, referrer, utmSource, utmMedium, utmCampaign } = submissionDetails
+  const { email, name, company, message, ...customFields } = formData;
+  const { submittedAt, referrer, utmSource, utmMedium, utmCampaign } = submissionDetails;
 
-  const subject = `New ${projectTitle} Waitlist Signup: ${name || email}`
+  const subject = `New ${projectTitle} Waitlist Signup: ${name || email}`;
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -71,24 +71,32 @@ function createFormSubmissionEmail(
         <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
         ${name ? `<p><strong>Name:</strong> ${name}</p>` : ''}
         ${company ? `<p><strong>Company:</strong> ${company}</p>` : ''}
-        ${message ? `
+        ${
+          message
+            ? `
           <div style="margin-top: 15px;">
             <strong>Message:</strong>
             <div style="background: white; padding: 10px; border-left: 3px solid #6366f1; margin-top: 5px;">
               ${message.replace(/\n/g, '<br>')}
             </div>
           </div>
-        ` : ''}
+        `
+            : ''
+        }
       </div>
 
-      ${Object.keys(customFields).length > 0 ? `
+      ${
+        Object.keys(customFields).length > 0
+          ? `
         <div style="background: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="color: #475569; margin-top: 0;">Additional Information</h3>
-          ${Object.entries(customFields).map(([key, value]) =>
-            `<p><strong>${key}:</strong> ${value}</p>`
-          ).join('')}
+          ${Object.entries(customFields)
+            .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`)
+            .join('')}
         </div>
-      ` : ''}
+      `
+          : ''
+      }
 
       <div style="background: #e2e8f0; padding: 15px; border-radius: 8px; margin: 20px 0;">
         <h3 style="color: #475569; margin-top: 0;">Submission Details</h3>
@@ -109,7 +117,7 @@ function createFormSubmissionEmail(
         </a>
       </div>
     </div>
-  `
+  `;
 
   const text = `
 New ${projectTitle} Waitlist Signup
@@ -120,10 +128,14 @@ ${name ? `- Name: ${name}` : ''}
 ${company ? `- Company: ${company}` : ''}
 ${message ? `- Message: ${message}` : ''}
 
-${Object.keys(customFields).length > 0 ?
-  'Additional Information:\n' +
-  Object.entries(customFields).map(([key, value]) => `- ${key}: ${value}`).join('\n') + '\n'
-  : ''
+${
+  Object.keys(customFields).length > 0
+    ? 'Additional Information:\n' +
+      Object.entries(customFields)
+        .map(([key, value]) => `- ${key}: ${value}`)
+        .join('\n') +
+      '\n'
+    : ''
 }
 
 Submission Details:
@@ -134,9 +146,9 @@ ${utmMedium ? `- Medium: ${utmMedium}` : ''}
 ${utmCampaign ? `- Campaign: ${utmCampaign}` : ''}
 
 View all submissions: ${process.env.NEXT_PUBLIC_BASE_URL}/admin
-  `
+  `;
 
-  return { subject, html, text }
+  return { subject, html, text };
 }
 
 // Main email sending function
@@ -144,15 +156,15 @@ export async function sendFormSubmissionNotification(
   projectTitle: string,
   formData: FormData,
   submissionDetails: {
-    submittedAt: Date
-    referrer?: string
-    utmSource?: string
-    utmMedium?: string
-    utmCampaign?: string
+    submittedAt: Date;
+    referrer?: string;
+    utmSource?: string;
+    utmMedium?: string;
+    utmCampaign?: string;
   }
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const emailTemplate = createFormSubmissionEmail(projectTitle, formData, submissionDetails)
+    const emailTemplate = createFormSubmissionEmail(projectTitle, formData, submissionDetails);
 
     const mailOptions = {
       from: process.env.MAILGUN_FROM_EMAIL || process.env.SMTP_FROM || 'noreply@marketprobe.app',
@@ -160,47 +172,47 @@ export async function sendFormSubmissionNotification(
       subject: emailTemplate.subject,
       html: emailTemplate.html,
       text: emailTemplate.text,
-    }
+    };
 
     if (transporter) {
-      const result = await transporter.sendMail(mailOptions)
-      console.log('Email sent successfully:', result.messageId)
-      return { success: true }
+      const result = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully:', result.messageId);
+      return { success: true };
     } else {
       // Fallback: log to console if no email config
-      console.log('=== EMAIL NOTIFICATION ===')
-      console.log('To:', mailOptions.to)
-      console.log('Subject:', mailOptions.subject)
-      console.log('Content:', emailTemplate.text)
-      console.log('========================')
-      return { success: true }
+      console.log('=== EMAIL NOTIFICATION ===');
+      console.log('To:', mailOptions.to);
+      console.log('Subject:', mailOptions.subject);
+      console.log('Content:', emailTemplate.text);
+      console.log('========================');
+      return { success: true };
     }
   } catch (error) {
-    console.error('Failed to send email notification:', error)
+    console.error('Failed to send email notification:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 
 // Health check for email service
 export async function checkEmailService(): Promise<boolean> {
   if (!transporter) {
-    return false
+    return false;
   }
 
   try {
-    await transporter.verify()
-    return true
+    await transporter.verify();
+    return true;
   } catch (error) {
-    console.error('Email service verification failed:', error)
-    return false
+    console.error('Email service verification failed:', error);
+    return false;
   }
 }
 
 // Email validation utility
 export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }

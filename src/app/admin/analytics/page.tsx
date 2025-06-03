@@ -1,130 +1,130 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { ArrowDownTrayIcon, CalendarIcon, ChartBarIcon } from '@heroicons/react/24/outline'
-import AnalyticsOverview from '@/components/admin/analytics/AnalyticsOverview'
-import TimeSeriesChart from '@/components/admin/analytics/TimeSeriesChart'
-import ConversionChart from '@/components/admin/analytics/ConversionChart'
-import TrafficSourcesChart from '@/components/admin/analytics/TrafficSourcesChart'
-import TechnologyChart from '@/components/admin/analytics/TechnologyChart'
+import { useState, useEffect } from 'react';
+import { ArrowDownTrayIcon, CalendarIcon, ChartBarIcon } from '@heroicons/react/24/outline';
+import AnalyticsOverview from '@/components/admin/analytics/AnalyticsOverview';
+import TimeSeriesChart from '@/components/admin/analytics/TimeSeriesChart';
+import ConversionChart from '@/components/admin/analytics/ConversionChart';
+import TrafficSourcesChart from '@/components/admin/analytics/TrafficSourcesChart';
+import TechnologyChart from '@/components/admin/analytics/TechnologyChart';
 
 interface Project {
-  id: number
-  slug: string
-  title: string
-  status: string
-  pageViews: number
-  formSubmissions: number
-  conversionRate: number
+  id: number;
+  slug: string;
+  title: string;
+  status: string;
+  pageViews: number;
+  formSubmissions: number;
+  conversionRate: number;
 }
 
 interface AnalyticsData {
   summary: {
-    pageViews: number
-    formSubmissions: number
-    conversionRate: number
-    period: { days: number; from: Date; to: Date }
-  }
+    pageViews: number;
+    formSubmissions: number;
+    conversionRate: number;
+    period: { days: number; from: Date; to: Date };
+  };
   timeSeries: {
-    pageViews: Array<{ date: string; count: number }>
-    submissions: Array<{ date: string; count: number }>
-  }
+    pageViews: Array<{ date: string; count: number }>;
+    submissions: Array<{ date: string; count: number }>;
+  };
   sources: {
-    utm: Array<{ utmSource: string; _count: { utmSource: number } }>
-    referrers: Array<{ referrer: string; _count: { referrer: number } }>
-  }
+    utm: Array<{ utmSource: string; _count: { utmSource: number } }>;
+    referrers: Array<{ referrer: string; _count: { referrer: number } }>;
+  };
   technology: {
-    devices: Array<{ device_type: string; count: number }>
-    browsers: Array<{ browser: string; count: number }>
-  }
+    devices: Array<{ device_type: string; count: number }>;
+    browsers: Array<{ browser: string; count: number }>;
+  };
 }
 
 export default function AnalyticsPage() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [selectedProject, setSelectedProject] = useState<number | null>(null)
-  const [timePeriod, setTimePeriod] = useState(30)
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedProject, setSelectedProject] = useState<number | null>(null);
+  const [timePeriod, setTimePeriod] = useState(30);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch projects overview
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const response = await fetch('/api/admin/analytics/projects')
-        if (!response.ok) throw new Error('Failed to fetch projects')
-        const data = await response.json()
-        setProjects(data)
+        const response = await fetch('/api/admin/analytics/projects');
+        if (!response.ok) throw new Error('Failed to fetch projects');
+        const data = await response.json();
+        setProjects(data);
 
         // Auto-select first project if available
         if (data.length > 0 && !selectedProject) {
-          setSelectedProject(data[0].id)
+          setSelectedProject(data[0].id);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load projects')
+        setError(err instanceof Error ? err.message : 'Failed to load projects');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchProjects()
-  }, [selectedProject])
+    fetchProjects();
+  }, [selectedProject]);
 
   // Fetch detailed analytics for selected project
   useEffect(() => {
     if (!selectedProject) {
-      setAnalyticsData(null)
-      return
+      setAnalyticsData(null);
+      return;
     }
 
     async function fetchAnalytics() {
       try {
-        setLoading(true)
+        setLoading(true);
         const response = await fetch(
           `/api/admin/analytics/detailed?projectId=${selectedProject}&days=${timePeriod}`
-        )
-        if (!response.ok) throw new Error('Failed to fetch analytics')
-        const data = await response.json()
-        setAnalyticsData(data)
+        );
+        if (!response.ok) throw new Error('Failed to fetch analytics');
+        const data = await response.json();
+        setAnalyticsData(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load analytics')
+        setError(err instanceof Error ? err.message : 'Failed to load analytics');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchAnalytics()
-  }, [selectedProject, timePeriod])
+    fetchAnalytics();
+  }, [selectedProject, timePeriod]);
 
   const handleExportData = async (format: 'csv' | 'json') => {
-    if (!selectedProject) return
+    if (!selectedProject) return;
 
     try {
       const response = await fetch(
         `/api/admin/analytics/export?projectId=${selectedProject}&days=${timePeriod}&format=${format}`
-      )
-      if (!response.ok) throw new Error('Export failed')
+      );
+      if (!response.ok) throw new Error('Export failed');
 
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `analytics-${projects.find(p => p.id === selectedProject)?.slug}-${timePeriod}days.${format}`
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `analytics-${projects.find(p => p.id === selectedProject)?.slug}-${timePeriod}days.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Export failed')
+      setError(err instanceof Error ? err.message : 'Export failed');
     }
-  }
+  };
 
   if (loading && !analyticsData) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
-    )
+    );
   }
 
   return (
@@ -169,11 +169,11 @@ export default function AnalyticsPage() {
             <label className="text-sm font-medium text-gray-700">Project:</label>
             <select
               value={selectedProject || ''}
-              onChange={(e) => setSelectedProject(Number(e.target.value))}
+              onChange={e => setSelectedProject(Number(e.target.value))}
               className="block w-64 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
               <option value="">Select a project</option>
-              {projects.map((project) => (
+              {projects.map(project => (
                 <option key={project.id} value={project.id}>
                   {project.title} ({project.status})
                 </option>
@@ -187,7 +187,7 @@ export default function AnalyticsPage() {
             <label className="text-sm font-medium text-gray-700">Period:</label>
             <select
               value={timePeriod}
-              onChange={(e) => setTimePeriod(Number(e.target.value))}
+              onChange={e => setTimePeriod(Number(e.target.value))}
               className="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
               <option value={7}>Last 7 days</option>
@@ -252,5 +252,5 @@ export default function AnalyticsPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

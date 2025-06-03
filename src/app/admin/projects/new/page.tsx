@@ -1,6 +1,6 @@
-import Link from 'next/link'
-import { ArrowLeftIcon } from '@heroicons/react/24/outline'
-import ProjectForm from '@/components/admin/ProjectForm'
+import Link from 'next/link';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import ProjectForm from '@/components/admin/ProjectForm';
 
 export default function NewProjectPage() {
   return (
@@ -30,5 +30,5 @@ export default function NewProjectPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { SignUp } from '@clerk/nextjs'
+import { SignUp } from '@clerk/nextjs';
 
 export default function Page() {
   return (
@@ -12,9 +12,7 @@ export default function Page() {
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Create Admin Account
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Join MarketProbe admin panel
-        </p>
+        <p className="mt-2 text-center text-sm text-gray-600">Join MarketProbe admin panel</p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -23,12 +21,12 @@ export default function Page() {
             afterSignUpUrl="/admin"
             appearance={{
               elements: {
-                formButtonPrimary: 'bg-blue-600 hover:bg-blue-700 text-sm normal-case'
-              }
+                formButtonPrimary: 'bg-blue-600 hover:bg-blue-700 text-sm normal-case',
+              },
             }}
           />
         </div>
       </div>
     </div>
-  )
+  );
 }

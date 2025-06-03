@@ -1,49 +1,49 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { TrashIcon } from '@heroicons/react/24/outline'
-import { ProjectWithCounts } from '@/types/admin'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { ProjectWithCounts } from '@/types/admin';
 
 interface DeleteProjectButtonProps {
-  project: ProjectWithCounts
+  project: ProjectWithCounts;
 }
 
 export default function DeleteProjectButton({ project }: DeleteProjectButtonProps) {
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [showConfirmation, setShowConfirmation] = useState(false)
-  const router = useRouter()
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const router = useRouter();
 
   const handleDelete = async () => {
     if (!showConfirmation) {
-      setShowConfirmation(true)
-      return
+      setShowConfirmation(true);
+      return;
     }
 
-    setIsDeleting(true)
+    setIsDeleting(true);
     try {
       const response = await fetch(`/api/admin/projects/${project.id}`, {
         method: 'DELETE',
-      })
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to delete project')
+        throw new Error('Failed to delete project');
       }
 
       // Refresh the page to show updated data
-      router.refresh()
+      router.refresh();
     } catch (error) {
-      console.error('Error deleting project:', error)
-      alert('Failed to delete project. Please try again.')
+      console.error('Error deleting project:', error);
+      alert('Failed to delete project. Please try again.');
     } finally {
-      setIsDeleting(false)
-      setShowConfirmation(false)
+      setIsDeleting(false);
+      setShowConfirmation(false);
     }
-  }
+  };
 
   const handleCancel = () => {
-    setShowConfirmation(false)
-  }
+    setShowConfirmation(false);
+  };
 
   if (showConfirmation) {
     return (
@@ -56,14 +56,11 @@ export default function DeleteProjectButton({ project }: DeleteProjectButtonProp
         >
           {isDeleting ? 'Deleting...' : 'Yes'}
         </button>
-        <button
-          onClick={handleCancel}
-          className="text-gray-600 hover:text-gray-800 text-xs"
-        >
+        <button onClick={handleCancel} className="text-gray-600 hover:text-gray-800 text-xs">
           Cancel
         </button>
       </div>
-    )
+    );
   }
 
   return (
@@ -74,5 +71,5 @@ export default function DeleteProjectButton({ project }: DeleteProjectButtonProp
     >
       <TrashIcon className="h-4 w-4" />
     </button>
-  )
+  );
 }

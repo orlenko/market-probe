@@ -46,16 +46,16 @@ async function runTests() {
     formData: {
       email: 'test@example.com',
       name: 'Test User',
-      message: 'This is a test submission from the API test script'
+      message: 'This is a test submission from the API test script',
     },
     utmSource: 'test',
     utmMedium: 'api-test',
-    utmCampaign: 'automated-testing'
+    utmCampaign: 'automated-testing',
   };
 
   await testAPI('/api/form/ai-writing-assistant', {
     method: 'POST',
-    body: JSON.stringify(formData)
+    body: JSON.stringify(formData),
   });
   console.log('');
 
@@ -67,13 +67,13 @@ async function runTests() {
     pathname: '/p/ai-writing-assistant',
     metadata: {
       test: true,
-      source: 'api-test-script'
-    }
+      source: 'api-test-script',
+    },
   };
 
   await testAPI('/api/analytics', {
     method: 'POST',
-    body: JSON.stringify(analyticsData)
+    body: JSON.stringify(analyticsData),
   });
   console.log('');
 

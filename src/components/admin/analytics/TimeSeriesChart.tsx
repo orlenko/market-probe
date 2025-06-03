@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   LineChart,
@@ -8,57 +8,57 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
-} from 'recharts'
-import { format, parseISO } from 'date-fns'
+  ResponsiveContainer,
+} from 'recharts';
+import { format, parseISO } from 'date-fns';
 
 interface TimeSeriesData {
-  pageViews: Array<{ date: string; count: number }>
-  submissions: Array<{ date: string; count: number }>
+  pageViews: Array<{ date: string; count: number }>;
+  submissions: Array<{ date: string; count: number }>;
 }
 
 interface TimeSeriesChartProps {
-  data: TimeSeriesData
+  data: TimeSeriesData;
 }
 
 export default function TimeSeriesChart({ data }: TimeSeriesChartProps) {
   // Merge page views and submissions data by date
   const mergedData = () => {
-    const dateMap = new Map()
+    const dateMap = new Map();
 
     // Add page views
     data.pageViews.forEach(item => {
-      const date = String(item.date)
+      const date = String(item.date);
       dateMap.set(date, {
         date,
         pageViews: Number(item.count),
-        submissions: 0
-      })
-    })
+        submissions: 0,
+      });
+    });
 
     // Add submissions
     data.submissions.forEach(item => {
-      const date = String(item.date)
-      const existing = dateMap.get(date) || { date, pageViews: 0, submissions: 0 }
-      existing.submissions = Number(item.count)
-      dateMap.set(date, existing)
-    })
+      const date = String(item.date);
+      const existing = dateMap.get(date) || { date, pageViews: 0, submissions: 0 };
+      existing.submissions = Number(item.count);
+      dateMap.set(date, existing);
+    });
 
     // Convert to array and sort by date
-    return Array.from(dateMap.values()).sort((a, b) =>
-      new Date(a.date).getTime() - new Date(b.date).getTime()
-    )
-  }
+    return Array.from(dateMap.values()).sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+  };
 
-  const chartData = mergedData()
+  const chartData = mergedData();
 
   const formatDate = (dateString: string) => {
     try {
-      return format(parseISO(dateString), 'MMM d')
+      return format(parseISO(dateString), 'MMM d');
     } catch {
-      return dateString
+      return dateString;
     }
-  }
+  };
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -71,10 +71,10 @@ export default function TimeSeriesChart({ data }: TimeSeriesChartProps) {
             </p>
           ))}
         </div>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
@@ -121,5 +121,5 @@ export default function TimeSeriesChart({ data }: TimeSeriesChartProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

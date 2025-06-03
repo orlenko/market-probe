@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { ProjectWithCounts } from '@/types/admin'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ProjectWithCounts } from '@/types/admin';
 
 interface ProjectFormProps {
-  project?: ProjectWithCounts
-  mode?: 'create' | 'edit'
+  project?: ProjectWithCounts;
+  mode?: 'create' | 'edit';
 }
 
 interface FormData {
-  title: string
-  slug: string
-  description: string
-  domain: string
-  status: string
+  title: string;
+  slug: string;
+  description: string;
+  domain: string;
+  status: string;
 }
 
 const initialFormData: FormData = {
@@ -22,8 +22,8 @@ const initialFormData: FormData = {
   slug: '',
   description: '',
   domain: '',
-  status: 'DRAFT'
-}
+  status: 'DRAFT',
+};
 
 export default function ProjectForm({ project, mode = 'create' }: ProjectFormProps) {
   const [formData, setFormData] = useState<FormData>(
@@ -33,13 +33,13 @@ export default function ProjectForm({ project, mode = 'create' }: ProjectFormPro
           slug: project.slug,
           description: project.description || '',
           domain: project.domain || '',
-          status: project.status
+          status: project.status,
         }
       : initialFormData
-  )
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errors, setErrors] = useState<Partial<FormData>>({})
-  const router = useRouter()
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const router = useRouter();
 
   const generateSlug = (title: string) => {
     return title
@@ -47,62 +47,62 @@ export default function ProjectForm({ project, mode = 'create' }: ProjectFormPro
       .replace(/[^a-z0-9\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
-      .trim()
-  }
+      .trim();
+  };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const title = e.target.value
+    const title = e.target.value;
     setFormData(prev => ({
       ...prev,
       title,
-      slug: mode === 'create' ? generateSlug(title) : prev.slug
-    }))
-  }
+      slug: mode === 'create' ? generateSlug(title) : prev.slug,
+    }));
+  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<FormData> = {}
+    const newErrors: Partial<FormData> = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = 'Title is required'
+      newErrors.title = 'Title is required';
     }
 
     if (!formData.slug.trim()) {
-      newErrors.slug = 'Slug is required'
+      newErrors.slug = 'Slug is required';
     } else if (!/^[a-z0-9-]+$/.test(formData.slug)) {
-      newErrors.slug = 'Slug can only contain lowercase letters, numbers, and hyphens'
+      newErrors.slug = 'Slug can only contain lowercase letters, numbers, and hyphens';
     }
 
     if (formData.domain && !/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.domain)) {
-      newErrors.domain = 'Please enter a valid domain (e.g., example.com)'
+      newErrors.domain = 'Please enter a valid domain (e.g., example.com)';
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!validateForm()) {
-      return
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
-      const url = mode === 'create'
-        ? '/api/admin/projects'
-        : `/api/admin/projects/${project?.id}`
+      const url = mode === 'create' ? '/api/admin/projects' : `/api/admin/projects/${project?.id}`;
 
-      const method = mode === 'create' ? 'POST' : 'PUT'
+      const method = mode === 'create' ? 'POST' : 'PUT';
 
       const response = await fetch(url, {
         method,
@@ -114,28 +114,28 @@ export default function ProjectForm({ project, mode = 'create' }: ProjectFormPro
           description: formData.description || null,
           domain: formData.domain || null,
         }),
-      })
+      });
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to save project')
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save project');
       }
 
-      const result = await response.json()
+      const result = await response.json();
 
       // Redirect to projects list or project edit page
       if (mode === 'create') {
-        router.push('/admin/projects')
+        router.push('/admin/projects');
       } else if (mode === 'edit') {
-        router.push('/admin/projects')
+        router.push('/admin/projects');
       }
     } catch (error) {
-      console.error('Error saving project:', error)
-      alert(error instanceof Error ? error.message : 'Failed to save project')
+      console.error('Error saving project:', error);
+      alert(error instanceof Error ? error.message : 'Failed to save project');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -237,7 +237,8 @@ export default function ProjectForm({ project, mode = 'create' }: ProjectFormPro
           <option value="GRADUATED">Graduated</option>
         </select>
         <p className="mt-1 text-sm text-gray-500">
-          Draft: Not visible to visitors. Active: Live and collecting data. Archived: Disabled. Graduated: Successfully validated.
+          Draft: Not visible to visitors. Active: Live and collecting data. Archived: Disabled.
+          Graduated: Successfully validated.
         </p>
       </div>
 
@@ -256,11 +257,14 @@ export default function ProjectForm({ project, mode = 'create' }: ProjectFormPro
           className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting
-            ? (mode === 'create' ? 'Creating...' : 'Updating...')
-            : (mode === 'create' ? 'Create Project' : 'Update Project')
-          }
+            ? mode === 'create'
+              ? 'Creating...'
+              : 'Updating...'
+            : mode === 'create'
+              ? 'Create Project'
+              : 'Update Project'}
         </button>
       </div>
     </form>
-  )
+  );
 }

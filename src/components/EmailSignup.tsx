@@ -53,7 +53,7 @@ export default function EmailSignup({
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
 
     // Clear field error when user starts typing
@@ -172,10 +172,9 @@ export default function EmailSignup({
             metadata: {
               variant,
               formFields: Object.keys(cleanFormData),
-            }
-          })
+            },
+          }),
         }).catch(console.error); // Don't fail the UX if analytics fails
-
       } else {
         throw new Error(result.error || 'Form submission failed');
       }
@@ -209,19 +208,15 @@ export default function EmailSignup({
           <input
             type="email"
             value={formData.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
+            onChange={e => handleInputChange('email', e.target.value)}
             placeholder={placeholder}
             className={`w-full px-4 py-3 rounded-md border focus:ring-2 focus:ring-blue-500 focus:outline-none transition-colors ${
-              fieldErrors.email
-                ? 'border-red-300 focus:ring-red-500'
-                : 'border-gray-300'
+              fieldErrors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
             }`}
             required
             disabled={isSubmitting}
           />
-          {fieldErrors.email && (
-            <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>
-          )}
+          {fieldErrors.email && <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>}
         </div>
 
         {/* Name field (optional) */}
@@ -230,18 +225,14 @@ export default function EmailSignup({
             <input
               type="text"
               value={formData.name || ''}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              onChange={e => handleInputChange('name', e.target.value)}
               placeholder="Your name"
               className={`w-full px-4 py-3 rounded-md border focus:ring-2 focus:ring-blue-500 focus:outline-none transition-colors ${
-                fieldErrors.name
-                  ? 'border-red-300 focus:ring-red-500'
-                  : 'border-gray-300'
+                fieldErrors.name ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
               }`}
               disabled={isSubmitting}
             />
-            {fieldErrors.name && (
-              <p className="mt-1 text-sm text-red-600">{fieldErrors.name}</p>
-            )}
+            {fieldErrors.name && <p className="mt-1 text-sm text-red-600">{fieldErrors.name}</p>}
           </div>
         )}
 
@@ -251,7 +242,7 @@ export default function EmailSignup({
             <input
               type="text"
               value={formData.company || ''}
-              onChange={(e) => handleInputChange('company', e.target.value)}
+              onChange={e => handleInputChange('company', e.target.value)}
               placeholder="Company name"
               className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-colors"
               disabled={isSubmitting}
@@ -264,7 +255,7 @@ export default function EmailSignup({
           <div>
             <textarea
               value={formData.message || ''}
-              onChange={(e) => handleInputChange('message', e.target.value)}
+              onChange={e => handleInputChange('message', e.target.value)}
               placeholder="Tell us about your interest..."
               rows={3}
               className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-colors resize-y"
@@ -274,17 +265,15 @@ export default function EmailSignup({
         )}
 
         {/* Custom fields */}
-        {customFields.map((field) => (
+        {customFields.map(field => (
           <div key={field.name}>
             <input
               type={field.type}
               value={formData[field.name] || ''}
-              onChange={(e) => handleInputChange(field.name, e.target.value)}
+              onChange={e => handleInputChange(field.name, e.target.value)}
               placeholder={field.placeholder || field.label}
               className={`w-full px-4 py-3 rounded-md border focus:ring-2 focus:ring-blue-500 focus:outline-none transition-colors ${
-                fieldErrors[field.name]
-                  ? 'border-red-300 focus:ring-red-500'
-                  : 'border-gray-300'
+                fieldErrors[field.name] ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
               }`}
               required={field.required}
               disabled={isSubmitting}

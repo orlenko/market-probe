@@ -1,14 +1,25 @@
-'use client'
+'use client';
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from 'recharts';
 
 interface TechnologyData {
-  devices: Array<{ device_type: string; count: number }>
-  browsers: Array<{ browser: string; count: number }>
+  devices: Array<{ device_type: string; count: number }>;
+  browsers: Array<{ browser: string; count: number }>;
 }
 
 interface TechnologyChartProps {
-  data: TechnologyData
+  data: TechnologyData;
 }
 
 export default function TechnologyChart({ data }: TechnologyChartProps) {
@@ -16,24 +27,24 @@ export default function TechnologyChart({ data }: TechnologyChartProps) {
   const deviceData = data.devices.map((device, index) => ({
     name: device.device_type || 'Unknown',
     value: Number(device.count),
-    color: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index % 5]
-  }))
+    color: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index % 5],
+  }));
 
   // Format browser data for bar chart
   const browserData = data.browsers
     .slice(0, 8) // Show top 8 browsers
     .map(browser => ({
       name: browser.browser || 'Unknown',
-      visits: Number(browser.count)
-    }))
+      visits: Number(browser.count),
+    }));
 
-  const DEVICE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+  const DEVICE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
   const DeviceTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload
-      const total = deviceData.reduce((sum, item) => sum + item.value, 0)
-      const percentage = total > 0 ? ((data.value / total) * 100).toFixed(1) : '0'
+      const data = payload[0].payload;
+      const total = deviceData.reduce((sum, item) => sum + item.value, 0);
+      const percentage = total > 0 ? ((data.value / total) * 100).toFixed(1) : '0';
       return (
         <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
           <p className="font-medium text-gray-900">{data.name}</p>
@@ -41,24 +52,22 @@ export default function TechnologyChart({ data }: TechnologyChartProps) {
             {data.value} visits ({percentage}%)
           </p>
         </div>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   const BrowserTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
           <p className="font-medium text-gray-900">{label}</p>
-          <p className="text-sm text-gray-600">
-            {payload[0].value} visits
-          </p>
+          <p className="text-sm text-gray-600">{payload[0].value} visits</p>
         </div>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
@@ -86,7 +95,10 @@ export default function TechnologyChart({ data }: TechnologyChartProps) {
                       dataKey="value"
                     >
                       {deviceData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={DEVICE_COLORS[index % DEVICE_COLORS.length]} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={DEVICE_COLORS[index % DEVICE_COLORS.length]}
+                        />
                       ))}
                     </Pie>
                     <Tooltip content={<DeviceTooltip />} />
@@ -96,8 +108,8 @@ export default function TechnologyChart({ data }: TechnologyChartProps) {
 
               <div className="space-y-2">
                 {deviceData.map((device, index) => {
-                  const total = deviceData.reduce((sum, item) => sum + item.value, 0)
-                  const percentage = total > 0 ? ((device.value / total) * 100).toFixed(0) : '0'
+                  const total = deviceData.reduce((sum, item) => sum + item.value, 0);
+                  const percentage = total > 0 ? ((device.value / total) * 100).toFixed(0) : '0';
                   return (
                     <div key={index} className="flex items-center justify-between">
                       <div className="flex items-center">
@@ -112,7 +124,7 @@ export default function TechnologyChart({ data }: TechnologyChartProps) {
                         <span className="text-xs text-gray-500 ml-1">({percentage}%)</span>
                       </div>
                     </div>
-                  )
+                  );
                 })}
               </div>
             </>
@@ -142,11 +154,7 @@ export default function TechnologyChart({ data }: TechnologyChartProps) {
                     />
                     <YAxis tick={{ fontSize: 12, fill: '#6b7280' }} />
                     <Tooltip content={<BrowserTooltip />} />
-                    <Bar
-                      dataKey="visits"
-                      fill="#6366f1"
-                      radius={[4, 4, 0, 0]}
-                    />
+                    <Bar dataKey="visits" fill="#6366f1" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -177,5 +185,5 @@ export default function TechnologyChart({ data }: TechnologyChartProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

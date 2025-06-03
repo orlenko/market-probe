@@ -103,9 +103,13 @@ describe('ProjectForm Component', () => {
       render(<ProjectForm />);
 
       expect(screen.getByText(/This will be the URL path for your project:/)).toBeInTheDocument();
-      expect(screen.getByText((content, element) => {
-        return element?.textContent === 'This will be the URL path for your project: /p/your-slug';
-      })).toBeInTheDocument();
+      expect(
+        screen.getByText((content, element) => {
+          return (
+            element?.textContent === 'This will be the URL path for your project: /p/your-slug'
+          );
+        })
+      ).toBeInTheDocument();
     });
 
     it('shows status descriptions', () => {
@@ -154,9 +158,13 @@ describe('ProjectForm Component', () => {
       const slugInput = screen.getByLabelText('URL Slug *');
       await user.type(slugInput, 'custom-slug');
 
-      expect(screen.getByText((content, element) => {
-        return element?.textContent === 'This will be the URL path for your project: /p/custom-slug';
-      })).toBeInTheDocument();
+      expect(
+        screen.getByText((content, element) => {
+          return (
+            element?.textContent === 'This will be the URL path for your project: /p/custom-slug'
+          );
+        })
+      ).toBeInTheDocument();
     });
 
     it('updates all form fields', async () => {
@@ -224,7 +232,9 @@ describe('ProjectForm Component', () => {
       await user.click(screen.getByRole('button', { name: 'Create Project' }));
 
       await waitFor(() => {
-        expect(screen.getByText('Slug can only contain lowercase letters, numbers, and hyphens')).toBeInTheDocument();
+        expect(
+          screen.getByText('Slug can only contain lowercase letters, numbers, and hyphens')
+        ).toBeInTheDocument();
       });
     });
 
@@ -237,7 +247,9 @@ describe('ProjectForm Component', () => {
       await user.click(screen.getByRole('button', { name: 'Create Project' }));
 
       await waitFor(() => {
-        expect(screen.getByText('Please enter a valid domain (e.g., example.com)')).toBeInTheDocument();
+        expect(
+          screen.getByText('Please enter a valid domain (e.g., example.com)')
+        ).toBeInTheDocument();
       });
     });
 
@@ -282,8 +294,12 @@ describe('ProjectForm Component', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Title is required')).toBeInTheDocument();
-        expect(screen.getByText('Slug can only contain lowercase letters, numbers, and hyphens')).toBeInTheDocument();
-        expect(screen.getByText('Please enter a valid domain (e.g., example.com)')).toBeInTheDocument();
+        expect(
+          screen.getByText('Slug can only contain lowercase letters, numbers, and hyphens')
+        ).toBeInTheDocument();
+        expect(
+          screen.getByText('Please enter a valid domain (e.g., example.com)')
+        ).toBeInTheDocument();
       });
     });
   });
@@ -367,9 +383,10 @@ describe('ProjectForm Component', () => {
       let resolvePromise: (value: any) => void;
 
       mockFetch.mockImplementationOnce(
-        () => new Promise(resolve => {
-          resolvePromise = resolve;
-        })
+        () =>
+          new Promise(resolve => {
+            resolvePromise = resolve;
+          })
       );
 
       render(<ProjectForm />);

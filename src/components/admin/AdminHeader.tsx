@@ -1,19 +1,17 @@
-'use client'
+'use client';
 
-import { UserButton, useUser } from '@clerk/nextjs'
-import { BellIcon } from '@heroicons/react/24/outline'
+import { UserButton, useUser } from '@clerk/nextjs';
+import { BellIcon } from '@heroicons/react/24/outline';
 
 export default function AdminHeader() {
-  const { user } = useUser()
+  const { user } = useUser();
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <h1 className="text-xl font-semibold text-gray-900">
-              Admin Dashboard
-            </h1>
+            <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -32,16 +30,14 @@ export default function AdminHeader() {
                 <span className="text-sm font-medium text-gray-900">
                   {user?.firstName || user?.emailAddresses[0]?.emailAddress || 'Admin User'}
                 </span>
-                <span className="text-xs text-gray-500">
-                  Administrator
-                </span>
+                <span className="text-xs text-gray-500">Administrator</span>
               </div>
               <UserButton
                 afterSignOutUrl="/"
                 appearance={{
                   elements: {
-                    avatarBox: "h-8 w-8"
-                  }
+                    avatarBox: 'h-8 w-8',
+                  },
                 }}
               />
             </div>
@@ -49,5 +45,5 @@ export default function AdminHeader() {
         </div>
       </div>
     </header>
-  )
+  );
 }

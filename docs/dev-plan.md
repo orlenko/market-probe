@@ -1,10 +1,12 @@
 # MarketProbe 2.0 Development Plan
 
 ## Project Evolution Overview
+
 **From:** Single landing page template for market validation
 **To:** Multi-project SaaS platform hosting multiple idea validation landing pages across domains
 
 ### Core Features:
+
 - **Multi-project hosting:** Many landing pages for different startup/product ideas
 - **Multi-domain routing:** Subpath (`/p/project-slug`) and custom domain support
 - **Native form handling:** No external dependencies, all data stored in Postgres
@@ -12,6 +14,7 @@
 - **Admin dashboard:** Project management, analytics viewing, form submission management
 
 ## Tech Stack
+
 - **Framework**: Next.js 14 with App Router and static export
 - **Styling**: Tailwind CSS
 - **Language**: TypeScript
@@ -22,13 +25,16 @@
 - **Hosting**: Vercel
 
 ## Database Schema
+
 ### Core Tables:
+
 - **Projects**: `id`, `slug`, `title`, `description`, `domain`, `status`, timestamps
 - **PageConfigs**: `project_id`, `template_config` (JSON), `design_config` (JSON)
 - **FormSubmissions**: `project_id`, `submitted_at`, `form_data` (JSON)
 - **AnalyticsEvents**: `project_id`, `event_type`, `timestamp`, `referrer`, `user_agent`, `ip_hash`
 
 ## Project Structure
+
 ```
 marketprobe-app/
 ├── src/
@@ -61,12 +67,14 @@ marketprobe-app/
 ## 🚀 CURRENT STATUS: Core Platform Complete!
 
 **✅ COMPLETED PHASES:**
+
 - ✅ **Phase 1**: Database Foundation (PostgreSQL + Prisma + Clerk Auth)
 - ✅ **Phase 2**: API Layer & Form Handling (Native APIs replacing external services)
 - ✅ **Phase 3**: Multi-Project Landing Pages (Dynamic routing + custom domains)
 - ✅ **Phase 4**: Admin Dashboard (Complete project management + analytics dashboard)
 
 **🎯 NEXT RECOMMENDED PHASES:**
+
 - **Phase 5**: Testing & Migration (Comprehensive testing + performance optimization)
 - **Phase 6**: Production Deployment (Production database + monitoring + CI/CD)
 - **Alternative**: Focus on specific enhancements (A/B testing, form submissions export, etc.)
@@ -74,7 +82,9 @@ marketprobe-app/
 ---
 
 ### Phase 1: Database Foundation ✅ (COMPLETED)
+
 **Migration from external services to native data handling**
+
 - [x] ~~Initialize Next.js project~~ (Existing)
 - [x] ~~Set up Tailwind CSS~~ (Existing)
 - [x] ~~Configure TypeScript~~ (Existing)
@@ -91,7 +101,9 @@ marketprobe-app/
   - [x] Add database storage for analytics events
 
 ### Phase 2: API Layer & Form Handling ✅ (COMPLETED)
+
 **Replace Formspree with native form handling**
+
 - [x] **NEW:** Create API routes for form submissions
   - [x] `/api/form/[slug]` - Handle project-specific form submissions
   - [x] Store submissions in database instead of Formspree
@@ -110,7 +122,9 @@ marketprobe-app/
   - [x] Add project-aware form handling
 
 ### Phase 3: Multi-Project Landing Pages ✅ → ✅ (COMPLETED)
+
 **Transform single page to dynamic template system**
+
 - [x] **NEW:** Create dynamic project routing
   - [x] `/p/[slug]` - Project-specific landing pages
   - [x] Load project configuration from database
@@ -129,7 +143,9 @@ marketprobe-app/
   - [x] DNS configuration documentation
 
 ### Phase 4: Admin Dashboard ✅ → ✅ (COMPLETED)
+
 **Complete admin interface for project management**
+
 - [x] **NEW:** Admin layout and navigation
   - [x] Protected admin routes with Clerk
   - [x] Dashboard navigation and layout
@@ -153,7 +169,9 @@ marketprobe-app/
   - [ ] Email notification configuration
 
 ### Phase 5: Testing & Migration 🔄 (Enhanced)
+
 **Comprehensive testing for multi-project system**
+
 - [ ] **MIGRATE:** Update existing tests for new architecture
   - [ ] Update EmailSignup component tests for new API
   - [ ] Test A/B testing utilities with multi-project support
@@ -173,7 +191,9 @@ marketprobe-app/
   - [ ] Accessibility compliance (WCAG guidelines)
 
 ### Phase 6: Deployment & Production 🔄 (Enhanced)
+
 **Production deployment with database and multi-tenancy**
+
 - [ ] **NEW:** Database deployment setup
   - [ ] Configure production PostgreSQL (Vercel Postgres or external)
   - [ ] Set up database migrations for production
@@ -191,7 +211,9 @@ marketprobe-app/
   - [ ] Performance monitoring
 
 ## Configuration Requirements
+
 ### Environment Variables:
+
 - [ ] `DATABASE_URL` - PostgreSQL connection string
 - [ ] `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk authentication
 - [ ] `CLERK_SECRET_KEY` - Clerk server-side key
@@ -200,12 +222,14 @@ marketprobe-app/
 - [ ] `NEXT_PUBLIC_BASE_URL` - Base URL for routing
 
 ### Migration Strategy:
+
 1. **Parallel development**: Build new features alongside existing ones
 2. **Feature flags**: Toggle between old and new systems during transition
 3. **Data migration**: Scripts to import existing Formspree data (if applicable)
 4. **Gradual rollout**: Start with admin features, then migrate landing pages
 
 ## Future Enhancements (Post-MVP)
+
 - Advanced custom domain automation with DNS API integration
 - Team collaboration features (multi-user access)
 - Advanced A/B testing with statistical significance tracking
@@ -218,6 +242,7 @@ marketprobe-app/
 - Advanced analytics with funnel tracking
 
 ## Success Metrics
+
 - **Technical**: Successful migration from external services to native platform
 - **Functional**: Ability to create and manage multiple projects with independent analytics
 - **Performance**: Sub-2s page load times for landing pages

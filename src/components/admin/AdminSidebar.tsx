@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import { usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import {
   HomeIcon,
   ChartBarIcon,
   DocumentTextIcon,
   Cog6ToothIcon,
   PlusIcon,
-  FolderIcon
-} from '@heroicons/react/24/outline'
+  FolderIcon,
+} from '@heroicons/react/24/outline';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon },
@@ -17,10 +17,10 @@ const navigation = [
   { name: 'Analytics', href: '/admin/analytics', icon: ChartBarIcon },
   { name: 'Submissions', href: '/admin/submissions', icon: DocumentTextIcon },
   { name: 'Settings', href: '/admin/settings', icon: Cog6ToothIcon },
-]
+];
 
 export default function AdminSidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <div className="hidden md:flex md:w-64 md:flex-col">
@@ -39,9 +39,10 @@ export default function AdminSidebar() {
 
         <div className="mt-8 flex-grow flex flex-col">
           <nav className="flex-1 px-4 space-y-1">
-            {navigation.map((item) => {
-              const isActive = pathname === item.href ||
-                (item.href !== '/admin' && pathname.startsWith(item.href))
+            {navigation.map(item => {
+              const isActive =
+                pathname === item.href ||
+                (item.href !== '/admin' && pathname.startsWith(item.href));
 
               return (
                 <Link
@@ -61,7 +62,7 @@ export default function AdminSidebar() {
                   />
                   {item.name}
                 </Link>
-              )
+              );
             })}
           </nav>
 
@@ -77,5 +78,5 @@ export default function AdminSidebar() {
         </div>
       </div>
     </div>
-  )
+  );
 }

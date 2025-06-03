@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface TrafficSource {
-  utm: Array<{ utmSource: string; _count: { utmSource: number } }>
-  referrers: Array<{ referrer: string; _count: { referrer: number } }>
+  utm: Array<{ utmSource: string; _count: { utmSource: number } }>;
+  referrers: Array<{ referrer: string; _count: { referrer: number } }>;
 }
 
 interface TrafficSourcesChartProps {
-  data: TrafficSource
+  data: TrafficSource;
 }
 
 export default function TrafficSourcesChart({ data }: TrafficSourcesChartProps) {
   // Combine UTM sources and referrers
   const formatTrafficData = () => {
-    const sources: Array<{ name: string; visits: number; type: string }> = []
+    const sources: Array<{ name: string; visits: number; type: string }> = [];
 
     // Add UTM sources
     data.utm.forEach(item => {
@@ -22,55 +22,51 @@ export default function TrafficSourcesChart({ data }: TrafficSourcesChartProps) 
         sources.push({
           name: item.utmSource,
           visits: item._count.utmSource,
-          type: 'UTM Source'
-        })
+          type: 'UTM Source',
+        });
       }
-    })
+    });
 
     // Add top referrers (limit to avoid clutter)
     data.referrers.slice(0, 5).forEach(item => {
       if (item.referrer) {
-        const domain = extractDomain(item.referrer)
+        const domain = extractDomain(item.referrer);
         sources.push({
           name: domain,
           visits: item._count.referrer,
-          type: 'Referrer'
-        })
+          type: 'Referrer',
+        });
       }
-    })
+    });
 
     // Sort by visits and take top 10
-    return sources
-      .sort((a, b) => b.visits - a.visits)
-      .slice(0, 10)
-  }
+    return sources.sort((a, b) => b.visits - a.visits).slice(0, 10);
+  };
 
   const extractDomain = (url: string): string => {
     try {
-      const domain = new URL(url).hostname
-      return domain.replace('www.', '')
+      const domain = new URL(url).hostname;
+      return domain.replace('www.', '');
     } catch {
-      return url.length > 30 ? url.substring(0, 30) + '...' : url
+      return url.length > 30 ? url.substring(0, 30) + '...' : url;
     }
-  }
+  };
 
-  const chartData = formatTrafficData()
+  const chartData = formatTrafficData();
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload
+      const data = payload[0].payload;
       return (
         <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
           <p className="font-medium text-gray-900">{label}</p>
-          <p className="text-sm text-gray-600">
-            {data.visits} visits
-          </p>
+          <p className="text-sm text-gray-600">{data.visits} visits</p>
           <p className="text-xs text-gray-500">{data.type}</p>
         </div>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
@@ -93,11 +89,7 @@ export default function TrafficSourcesChart({ data }: TrafficSourcesChartProps) 
                   width={120}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar
-                  dataKey="visits"
-                  fill="#6366f1"
-                  radius={[0, 4, 4, 0]}
-                />
+                <Bar dataKey="visits" fill="#6366f1" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -106,7 +98,10 @@ export default function TrafficSourcesChart({ data }: TrafficSourcesChartProps) 
           <div className="space-y-3">
             <h4 className="text-sm font-medium text-gray-900">Top Sources</h4>
             {chartData.slice(0, 5).map((source, index) => (
-              <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+              <div
+                key={index}
+                className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0"
+              >
                 <div className="flex items-center">
                   <div className="w-2 h-2 bg-indigo-500 rounded-full mr-3"></div>
                   <div>
@@ -131,5 +126,5 @@ export default function TrafficSourcesChart({ data }: TrafficSourcesChartProps) 
         </div>
       )}
     </div>
-  )
+  );
 }

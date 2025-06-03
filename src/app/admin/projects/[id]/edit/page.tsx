@@ -1,14 +1,14 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { ArrowLeftIcon } from '@heroicons/react/24/outline'
-import { prisma } from '@/lib/db'
-import { ProjectWithCounts } from '@/types/admin'
-import ProjectForm from '@/components/admin/ProjectForm'
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { prisma } from '@/lib/db';
+import { ProjectWithCounts } from '@/types/admin';
+import ProjectForm from '@/components/admin/ProjectForm';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 interface EditProjectPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>;
 }
 
 async function getProject(id: number): Promise<ProjectWithCounts | null> {
@@ -19,30 +19,31 @@ async function getProject(id: number): Promise<ProjectWithCounts | null> {
         _count: {
           select: {
             formSubmissions: true,
-            analyticsEvents: true
-          }
-        }
-      }
-    })
+            analyticsEvents: true,
+          },
+        },
+      },
+    });
 
-    return project as ProjectWithCounts | null
+    return project as ProjectWithCounts | null;
   } catch (error) {
-    console.error('Error fetching project:', error)
-    return null
+    console.error('Error fetching project:', error);
+    return null;
   }
 }
 
 export default async function EditProjectPage({ params }: EditProjectPageProps) {
-  const projectId = parseInt(params.id)
+  const { id } = await params;
+  const projectId = parseInt(id);
 
   if (isNaN(projectId)) {
-    notFound()
+    notFound();
   }
 
-  const project = await getProject(projectId)
+  const project = await getProject(projectId);
 
   if (!project) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -64,7 +65,11 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
         <div className="flex items-center">
           <div className="flex-shrink-0">
             <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clipRule="evenodd"
+              />
             </svg>
           </div>
           <div className="ml-3">
@@ -76,12 +81,14 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
                 URL: <span className="font-mono">/p/{project.slug}</span>
                 {project.domain && (
                   <>
-                    {' '}• Custom domain: <span className="font-mono">{project.domain}</span>
+                    {' '}
+                    • Custom domain: <span className="font-mono">{project.domain}</span>
                   </>
                 )}
               </p>
               <p className="mt-1">
-                {project._count.formSubmissions} submissions • {project._count.analyticsEvents} page views
+                {project._count.formSubmissions} submissions • {project._count.analyticsEvents} page
+                views
               </p>
             </div>
           </div>
@@ -101,5 +108,5 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
         </div>
       </div>
     </div>
-  )
+  );
 }

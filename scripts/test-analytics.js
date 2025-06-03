@@ -21,7 +21,7 @@ async function testAnalytics() {
         conversionRate: detailed.summary.conversionRate.toFixed(2) + '%',
         timeSeriesEntries: detailed.timeSeries.pageViews.length,
         utmSources: detailed.sources.utm.length,
-        referrers: detailed.sources.referrers.length
+        referrers: detailed.sources.referrers.length,
       });
     }
 
