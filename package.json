@@ -28,7 +28,8 @@
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
     "setup:local": "docker-compose up -d && sleep 5 && npm run db:migrate && npm run db:seed",
-    "setup:clean": "docker-compose down -v && npm run setup:local"
+    "setup:clean": "docker-compose down -v && npm run setup:local",
+    "setup:staging": "NODE_ENV=staging tsx prisma/seed.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.20.2",

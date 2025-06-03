@@ -1,0 +1,103 @@
+name: Preview Deployment
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [develop]
+
+env:
+  NODE_VERSION: 18
+
+jobs:
+  # Wait for CI to complete before deploying
+  wait-for-ci:
+    name: Wait for CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for CI workflow
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.ref }}
+          check-name: 'Quality Checks'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 30
+
+      - name: Wait for tests
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.ref }}
+          check-name: 'Test Suite'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 30
+
+  deploy-preview:
+    name: Deploy Preview/Staging
+    runs-on: ubuntu-latest
+    needs: [wait-for-ci]
+    if: always() && needs.wait-for-ci.result == 'success'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      - name: Run database migrations (staging)
+        run: npm run db:deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
+
+      - name: Build application
+        run: npm run build
+        env:
+          # Staging Environment Variables
+          DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY_STAGING }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_STAGING }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL_STAGING }}
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY_STAGING }}
+          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN_STAGING }}
+
+      - name: Deploy to Vercel (Preview)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./
+          # Don't use --prod flag for preview deployments
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY_STAGING }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_STAGING }}
+
+      - name: Comment PR with preview URL
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🚀 **Preview deployment ready!**\n\n' +
+                    'View your changes: https://market-probe-git-${{ github.head_ref }}-your-username.vercel.app\n\n' +
+                    '📊 Admin Dashboard: https://market-probe-git-${{ github.head_ref }}-your-username.vercel.app/admin\n\n' +
+                    '⚠️ **Note**: Using staging database with test data only.'
+            })
+
+      - name: Run health check (staging)
+        run: |
+          sleep 30
+          # Update URL to match your staging deployment pattern
+          curl -f ${{ secrets.NEXT_PUBLIC_BASE_URL_STAGING }}/api/health || exit 1
