@@ -83,10 +83,17 @@ MAILGUN_DOMAIN_STAGING=sandbox123.mailgun.org
 #### **Build Process**:
 
 ```bash
-npm run build  # Now includes:
+# Production/Staging Deployment
+npm run build  # Includes:
 # 1. prisma migrate deploy  (creates/updates tables)
 # 2. prisma generate        (generates client)
 # 3. next build            (builds application)
+
+# CI/Testing Environment
+npm run build:ci  # Includes:
+# 1. prisma generate        (generates client only)
+# 2. next build            (builds application)
+# Note: No migrations - CI just tests code quality
 ```
 
 #### **Migration Safety**:

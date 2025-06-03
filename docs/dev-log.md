@@ -1206,3 +1206,123 @@ DATABASE_URL=postgresql://dev:dev@localhost:5432/marketprobe_dev
 - **Ready for**: Immediate use with enhanced developer velocity
 
 ---
+
+## 2025-06-03 - CI Build Fix for DATABASE_URL (COMPLETED) 🔧
+
+### Topic: Separating CI Build from Migration-Enabled Build
+
+#### Changes Made:
+
+- **Created separate CI build script** (`npm run build:ci`)
+
+  - Removed migration requirement from CI builds
+  - Only generates Prisma client and builds Next.js app
+  - No actual database connection required for CI testing
+
+- **Updated CI workflow** (`.github/workflows/ci.yml`)
+
+  - Now uses `npm run build:ci` instead of `npm run build`
+  - Added mock DATABASE_URL for Prisma client generation
+  - Maintains separation between testing and deployment concerns
+
+- **Preserved migration-enabled build** (`npm run build`)
+
+  - Keeps automatic migrations for deployment environments
+  - Production and staging deployments continue to work as intended
+  - No changes to deployment workflows
+
+- **Updated documentation** for build script differences
+  - Clear explanation in `docs/DEPLOYMENT.md`
+  - Added commands reference in `docs/DEVELOPMENT.md`
+  - Documented when to use each build script
+
+#### Dev Plan Progress:
+
+✅ **CI Build Issues (RESOLVED)**
+
+- [x] Fixed DATABASE_URL requirement error in CI
+- [x] Separated testing concerns from deployment concerns
+- [x] Maintained automated migration system for deployments
+- [x] Updated documentation with build script differences
+
+#### Problem Solved:
+
+**Issue**: CI builds were failing because they tried to run `prisma migrate deploy` without a DATABASE_URL
+
+```bash
+Error: Environment variable not found: DATABASE_URL
+Error code: P1012
+```
+
+**Root Cause**: CI workflow was using the same build script as deployments, but CI should only test code quality, not run actual database migrations.
+
+**Solution**: Created separate build scripts for different environments:
+
+```bash
+# Before (Single build script)
+npm run build → prisma migrate deploy && prisma generate && next build
+
+# After (Environment-specific scripts)
+npm run build     → prisma migrate deploy && prisma generate && next build  # Deployments
+npm run build:ci  → prisma generate && next build                           # CI/Testing
+```
+
+#### Tools/Commands Run:
+
+- Added `build:ci` script to package.json
+- Updated `.github/workflows/ci.yml` to use CI-specific build
+- Added mock DATABASE_URL for Prisma client generation
+- Tested locally with mock database URL
+- Updated deployment and development documentation
+
+#### Architecture Improvements:
+
+- **Clear Separation of Concerns**: CI tests code, deployments handle database
+- **Environment-Appropriate Builds**: Different build processes for different needs
+- **Maintained Migration Automation**: Deployments still get automatic migrations
+- **Robust CI Testing**: CI can run without any database dependencies
+- **Clear Documentation**: Developers know which script to use when
+
+#### Build Script Comparison:
+
+| Environment    | Script     | Migrations | Database Required | Purpose                    |
+| -------------- | ---------- | ---------- | ----------------- | -------------------------- |
+| **CI/Testing** | `build:ci` | ❌ No      | ❌ Mock only      | Test code quality          |
+| **Production** | `build`    | ✅ Yes     | ✅ Real DB        | Deploy with schema updates |
+| **Staging**    | `build`    | ✅ Yes     | ✅ Staging DB     | Deploy with schema updates |
+
+#### Testing Results:
+
+🎯 **CI Build Fix Verification**:
+
+- ✅ `npm run build:ci` works with mock DATABASE_URL
+- ✅ Prisma client generates successfully without real database
+- ✅ Next.js application builds completely
+- ✅ No migration attempts during CI builds
+- ✅ Deployment builds continue to work with real migrations
+
+#### Next Steps:
+
+**For CI Success:**
+
+- CI builds will now pass without DATABASE_URL issues
+- Testing focuses on code quality and functionality
+- No database setup required for code quality checks
+
+**For Deployments:**
+
+- Production/staging builds continue with automatic migrations
+- Real database connections required only during actual deployments
+- Clean separation between testing and deployment concerns
+
+#### Deployment Status:
+
+🚀 **CI BUILD ISSUE RESOLVED**
+
+- **CI Builds**: ✅ Work without database dependencies
+- **Deployment Builds**: ✅ Continue with automatic migrations
+- **Documentation**: ✅ Clear guidance on script usage
+- **Architecture**: ✅ Proper separation of testing vs deployment concerns
+- **Ready for**: Successful CI builds and automated deployments
+
+---

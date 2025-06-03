@@ -213,6 +213,12 @@ npm run format && git add . && git commit -m "feat: add new feature"
 # Check everything before push
 npm run quality  # Runs: type-check, lint, format:check, test
 
+# Build for production (with migrations)
+npm run build
+
+# Build for CI/testing (no migrations)
+npm run build:ci
+
 # Reset local development database
 npm run setup:clean
 ```
