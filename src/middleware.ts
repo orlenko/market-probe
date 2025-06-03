@@ -5,8 +5,10 @@ import { db } from '@/lib/db';
 const isProtectedRoute = createRouteMatcher(['/admin(.*)']);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-  // Protect admin routes
-  if (isProtectedRoute(req)) {
+  // Only protect admin routes if Clerk is properly configured
+  const hasClerkKeys = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith('pk_');
+
+  if (isProtectedRoute(req) && hasClerkKeys) {
     await auth.protect();
   }
 

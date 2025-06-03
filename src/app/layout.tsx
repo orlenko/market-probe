@@ -33,23 +33,25 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const hasClerkKeys = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith('pk_');
+
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <head>
-          {/* Plausible Analytics Script - Only add in production */}
-          {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
-            <script
-              defer
-              data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
-              src="https://plausible.io/js/script.js"
-            />
-          )}
-        </head>
-        <body className={inter.className}>
-          <div className="flex min-h-screen flex-col">{children}</div>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <head>
+        {/* Plausible Analytics Script - Only add in production */}
+        {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
+          <script
+            defer
+            data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+            src="https://plausible.io/js/script.js"
+          />
+        )}
+      </head>
+      <body className={inter.className}>
+        <div className="flex min-h-screen flex-col">
+          {hasClerkKeys ? <ClerkProvider>{children}</ClerkProvider> : children}
+        </div>
+      </body>
+    </html>
   );
 }
