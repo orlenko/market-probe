@@ -10,6 +10,7 @@
     "lint:fix": "next lint --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
+    "format:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
     "type-check": "tsc --noEmit",
     "type-check:src": "tsc --project tsconfig.lint.json",
     "test": "jest",

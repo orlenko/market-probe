@@ -758,18 +758,21 @@ Ready for **Phase 5: Enhanced Testing & Production Features**:
 #### Environment Variables Needed for Vercel:
 
 **Required for deployment:**
+
 - `DATABASE_URL` - PostgreSQL connection (production database)
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk authentication
 - `CLERK_SECRET_KEY` - Clerk server-side authentication
 - `NEXT_PUBLIC_BASE_URL` - Production base URL
 
 **Optional but recommended:**
+
 - `MAILGUN_API_KEY` + `MAILGUN_DOMAIN` - Email notifications
 - `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` - External analytics
 
 #### Next Steps:
 
 **For Production Deployment:**
+
 - Set up production PostgreSQL database (Vercel Postgres or external)
 - Configure Clerk production environment
 - Add environment variables to Vercel dashboard
@@ -795,17 +798,20 @@ Ready for **Phase 5: Enhanced Testing & Production Features**:
 #### Changes Made:
 
 - **Created preview deployment workflow** (`.github/workflows/preview-deploy.yml`)
+
   - Automated staging deployments for `develop` branch and PRs
   - Separate staging environment variables and database
   - Automatic PR comments with preview URLs
   - Health checks for staging deployments
 
 - **Enhanced production deployment workflow** (`.github/workflows/deploy.yml`)
+
   - Removed redundant Prisma generation (now in build script)
   - Updated environment variable naming for consistency
   - Clearer production-focused configuration
 
 - **Added comprehensive deployment documentation** (`docs/DEPLOYMENT.md`)
+
   - Complete environment strategy (production vs staging vs local)
   - Database setup guides for Neon and Vercel Postgres
   - Environment variable configuration for both environments
@@ -835,11 +841,11 @@ Ready for **Phase 5: Enhanced Testing & Production Features**:
 
 #### Environment Strategy:
 
-| Environment | Branch | Database | Purpose | Deployment |
-|-------------|--------|----------|---------|------------|
-| **Production** | `main` | Neon/Vercel Postgres | Live customer data | Automated via GitHub Actions |
-| **Staging** | `develop`, PRs | Neon Free Tier | Test data, demos | Automated preview deployments |
-| **Local** | All branches | Docker PostgreSQL | Development | Manual setup |
+| Environment    | Branch         | Database             | Purpose            | Deployment                    |
+| -------------- | -------------- | -------------------- | ------------------ | ----------------------------- |
+| **Production** | `main`         | Neon/Vercel Postgres | Live customer data | Automated via GitHub Actions  |
+| **Staging**    | `develop`, PRs | Neon Free Tier       | Test data, demos   | Automated preview deployments |
+| **Local**      | All branches   | Docker PostgreSQL    | Development        | Manual setup                  |
 
 #### Tools/Commands Run:
 
@@ -873,6 +879,7 @@ DATABASE_URL=postgresql://dev:dev@localhost:5432/marketprobe_dev
 #### Deployment Workflow Features:
 
 - **Production Deployment**:
+
   - Triggers on `main` branch push
   - Runs production database migrations
   - Uses production environment variables
@@ -889,6 +896,7 @@ DATABASE_URL=postgresql://dev:dev@localhost:5432/marketprobe_dev
 #### Next Steps:
 
 **For Immediate Deployment:**
+
 1. Set up production database (Neon recommended)
 2. Set up staging database (Neon free tier)
 3. Configure Clerk applications (production + staging)
@@ -896,6 +904,7 @@ DATABASE_URL=postgresql://dev:dev@localhost:5432/marketprobe_dev
 5. Push to `main` branch to trigger production deployment
 
 **For Advanced Features:**
+
 - Custom domain routing configuration
 - Email notification setup with Mailgun
 - Advanced monitoring and analytics
@@ -921,16 +930,19 @@ DATABASE_URL=postgresql://dev:dev@localhost:5432/marketprobe_dev
 #### Changes Made:
 
 - **Enhanced build script** to include automatic migrations
+
   - Updated `package.json` build script: `"prisma migrate deploy && prisma generate && next build"`
   - Migrations now run before every build automatically
   - No manual migration steps required
 
 - **Streamlined CI/CD workflows** to remove redundant migration steps
+
   - Removed separate migration steps from `.github/workflows/deploy.yml`
   - Removed separate migration steps from `.github/workflows/preview-deploy.yml`
   - Simplified workflows now only handle build and deployment
 
 - **Enhanced Vercel configuration** for build-time database access
+
   - Updated `vercel.json` to include DATABASE_URL during build
   - Ensures migrations run during Vercel deployments
 
@@ -1009,11 +1021,13 @@ DATABASE_URL=postgresql://dev:dev@localhost:5432/marketprobe_dev
 #### Next Steps:
 
 **For Immediate Use:**
+
 1. Set up production and staging databases (if not done)
 2. Configure environment variables in Vercel
 3. Push to branch → Automatic migration and deployment!
 
 **Migration Features Ready:**
+
 - Complete automation for all environments
 - Safe deployment with migration validation
 - Zero manual database management required
@@ -1027,5 +1041,168 @@ DATABASE_URL=postgresql://dev:dev@localhost:5432/marketprobe_dev
 - **Vercel Integration**: ✅ Database access during build process
 - **Documentation**: ✅ Complete troubleshooting and process guides
 - **Ready for**: Push-to-deploy with automatic database migrations
+
+---
+
+## 2025-06-03 - Auto-Formatting System (COMPLETED) 🎨
+
+### Topic: Intelligent Auto-Formatting for Enhanced Developer Velocity
+
+#### Changes Made:
+
+- **Created automated formatting workflow** (`.github/workflows/auto-format.yml`)
+
+  - Automatically formats code on all branches except `main`
+  - Commits formatted changes back to the branch
+  - Adds informative PR comments when formatting is applied
+  - Includes security safeguards for fork PRs
+
+- **Enhanced CI workflow** to be formatting-friendly
+
+  - Changed formatting check from blocking to informational
+  - CI continues even with formatting issues (auto-format will fix them)
+  - Improved developer experience with clear messaging
+
+- **Added developer convenience scripts**
+
+  - `npm run format:fix` as an intuitive alias for formatting
+  - Enhanced package.json with better script organization
+
+- **Created comprehensive development guide** (`docs/DEVELOPMENT.md`)
+
+  - Complete auto-formatting workflow documentation
+  - Developer experience benefits and before/after comparisons
+  - Local development setup and productivity tips
+  - Code style guidelines and best practices
+  - Debugging and troubleshooting information
+
+- **Updated main README** with development workflow highlights
+  - Clear mention of automated formatting and migrations
+  - Quick start guide emphasizing zero-friction development
+  - Link to detailed development documentation
+
+#### Dev Plan Progress:
+
+✅ **Developer Velocity Enhancement (COMPLETE)**
+
+- [x] Automated code formatting system
+- [x] Non-blocking CI for formatting issues
+- [x] Intelligent branch-based formatting behavior
+- [x] PR integration with automatic notifications
+- [x] Comprehensive developer documentation
+- [x] Enhanced package.json scripts for local development
+
+#### New Architectural Considerations:
+
+- **Intelligent Workflow Behavior**: Different formatting rules for different branch types
+- **Security-First Design**: Fork PRs are excluded from auto-commits for security
+- **Non-Blocking Development**: Formatting issues don't stop development progress
+- **Automated Communication**: PR comments keep developers informed of automatic changes
+- **Productivity Focus**: Zero manual formatting steps required
+
+#### Auto-Formatting Workflow Features:
+
+```yaml
+# Triggers
+- Push to any branch (except main)
+- Pull request updates
+- Security: Only same-repo PRs (not forks)
+
+# Process
+1. Check if formatting needed
+2. Auto-format with Prettier
+3. Detect changes
+4. Commit back to branch
+5. Comment on PR (if applicable)
+6. Continue development
+```
+
+#### Tools/Commands Run:
+
+- Created GitHub Actions auto-formatting workflow
+- Enhanced CI workflow for developer-friendly behavior
+- Added npm scripts for local formatting convenience
+- Created comprehensive development documentation
+
+#### Developer Experience Improvements:
+
+**Before Auto-Formatting:**
+
+```bash
+# Developer workflow (6 steps)
+1. Write code
+2. git push
+3. ❌ CI fails on formatting
+4. npm run format
+5. git commit & push again
+6. Wait for CI to pass
+```
+
+**With Auto-Formatting:**
+
+```bash
+# Developer workflow (2 steps)
+1. Write code
+2. git push → ✅ Everything automated
+```
+
+#### Architecture Achievements:
+
+- **Zero-Friction Development**: No manual formatting steps required
+- **Intelligent Automation**: Branch-aware formatting behavior
+- **Security Conscious**: Safe handling of external contributions
+- **Communication Integration**: Automatic PR notifications
+- **Documentation Excellence**: Complete development workflow guide
+- **Performance Optimized**: Conditional execution and smart change detection
+
+#### Formatting System Safeguards:
+
+- ✅ **Branch Protection**: Main branch requires clean formatting
+- ✅ **Security Isolation**: Fork PRs use different workflow (no auto-commits)
+- ✅ **Change Detection**: Only commits when formatting actually changes files
+- ✅ **Clear Communication**: Descriptive commit messages and PR comments
+- ✅ **Fail-Safe Operation**: Errors don't break the development process
+
+#### Testing Results:
+
+🎯 **Auto-Formatting Workflow Verification**:
+
+- ✅ Workflow created with comprehensive safety checks
+- ✅ CI updated to be non-blocking for formatting issues
+- ✅ Package.json enhanced with developer convenience scripts
+- ✅ Development guide created with complete workflow documentation
+- ✅ README updated with developer experience highlights
+
+#### Next Steps:
+
+**For Development Teams:**
+
+- Push unformatted code → Auto-formatting handles style
+- Focus on logic and functionality during code review
+- Enjoy faster feedback loops without formatting friction
+
+**For Production:**
+
+- Main branch maintains clean, formatted code
+- Deployment builds remain fast and reliable
+- Code style consistency enforced automatically
+
+#### Productivity Impact:
+
+- **Reduced Context Switching**: No manual formatting interruptions
+- **Faster Code Reviews**: Focus on logic, not style
+- **Consistent Code Style**: Automatic enforcement across all contributions
+- **Lower Barrier to Entry**: New contributors don't need to learn formatting rules
+- **Improved CI Performance**: Less failed builds due to formatting
+
+#### Deployment Status:
+
+🚀 **AUTO-FORMATTING SYSTEM COMPLETE**
+
+- **Automation**: ✅ Intelligent branch-based formatting workflow
+- **Developer Experience**: ✅ Zero-friction development process
+- **Documentation**: ✅ Comprehensive development guide
+- **Safety**: ✅ Security-conscious design with proper safeguards
+- **Ready for**: Immediate use with enhanced developer velocity
 
 ---

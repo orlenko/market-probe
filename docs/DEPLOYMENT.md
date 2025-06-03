@@ -4,17 +4,18 @@
 
 ### **Database Instances**
 
-| Environment | Branch | Database | Purpose |
-|-------------|--------|----------|---------|
-| **Production** | `main` | PostgreSQL (Neon/Vercel) | Live data, customers |
-| **Staging** | `develop`, PRs | PostgreSQL (Neon Free) | Test data, demos |
-| **Local** | All branches | Docker PostgreSQL | Development |
+| Environment    | Branch         | Database                 | Purpose              |
+| -------------- | -------------- | ------------------------ | -------------------- |
+| **Production** | `main`         | PostgreSQL (Neon/Vercel) | Live data, customers |
+| **Staging**    | `develop`, PRs | PostgreSQL (Neon Free)   | Test data, demos     |
+| **Local**      | All branches   | Docker PostgreSQL        | Development          |
 
 ## 🚀 Quick Setup
 
 ### **1. Database Setup**
 
 #### **Production Database (Neon - Recommended)**
+
 1. Go to [console.neon.tech](https://console.neon.tech)
 2. Create project: `marketprobe-production`
 3. Copy connection string:
@@ -23,6 +24,7 @@
    ```
 
 #### **Staging Database (Neon Free Tier)**
+
 1. Create second project: `marketprobe-staging`
 2. Copy connection string:
    ```
@@ -32,6 +34,7 @@
 ### **2. Vercel Environment Variables**
 
 #### **Production (Required)**
+
 ```bash
 # Database
 DATABASE_URL=postgresql://prod_connection_string
@@ -49,6 +52,7 @@ MAILGUN_DOMAIN=mg.yourdomain.com
 ```
 
 #### **Staging/Preview (Optional but Recommended)**
+
 ```bash
 # Database
 DATABASE_URL_STAGING=postgresql://staging_connection_string
@@ -77,6 +81,7 @@ MAILGUN_DOMAIN_STAGING=sandbox123.mailgun.org
 - ✅ **Safe migration deployment** with proper rollback on failures
 
 #### **Build Process**:
+
 ```bash
 npm run build  # Now includes:
 # 1. prisma migrate deploy  (creates/updates tables)
@@ -85,12 +90,14 @@ npm run build  # Now includes:
 ```
 
 #### **Migration Safety**:
+
 - ✅ **Fail-fast**: Build fails if migration fails (prevents broken deployments)
 - ✅ **Database locking**: Prisma handles concurrent migration safety
 - ✅ **Rollback ready**: Failed deployments don't affect database state
 - ✅ **Version tracking**: Migration history maintained in `_prisma_migrations` table
 
 #### **What Happens During Migration**:
+
 1. **Check migration status** - Compares local migrations vs database
 2. **Apply pending migrations** - Runs any new migration files
 3. **Generate Prisma client** - Creates typed database client
@@ -98,6 +105,7 @@ npm run build  # Now includes:
 5. **Deploy** - Only if all previous steps succeed
 
 ### **Production Deployment**
+
 - **Trigger**: Push to `main` branch
 - **Workflow**: `.github/workflows/deploy.yml`
 - **Process**:
@@ -107,6 +115,7 @@ npm run build  # Now includes:
   4. Run health check
 
 ### **Staging/Preview Deployment**
+
 - **Trigger**: Push to `develop` or PR to `main`
 - **Workflow**: `.github/workflows/preview-deploy.yml`
 - **Process**:
@@ -132,6 +141,7 @@ NODE_ENV=staging DATABASE_URL=staging_url npm run setup:staging
 ```
 
 ### **Staging Data Includes**:
+
 - ✅ 2 sample projects (AI tool + Eco packaging)
 - ✅ 30 days of analytics data (~500 page views)
 - ✅ Sample form submissions
@@ -141,12 +151,14 @@ NODE_ENV=staging DATABASE_URL=staging_url npm run setup:staging
 ## 🔐 Authentication Setup
 
 ### **Production Clerk Setup**
+
 1. Create production Clerk application
 2. Configure production domain: `yourdomain.com`
 3. Add production environment variables to Vercel
 4. Set up webhooks if needed
 
 ### **Staging Clerk Setup**
+
 1. Create development/test Clerk application
 2. Configure staging domain: `*.vercel.app`
 3. Add staging environment variables to Vercel
@@ -155,11 +167,14 @@ NODE_ENV=staging DATABASE_URL=staging_url npm run setup:staging
 ## 🌐 Custom Domain Setup
 
 ### **Production Domain**
+
 1. **Vercel Configuration**:
+
    - Vercel Dashboard → Domains → Add `yourdomain.com`
    - Configure DNS records as instructed
 
 2. **Database Configuration**:
+
    - Update `NEXT_PUBLIC_BASE_URL=https://yourdomain.com`
    - Configure Clerk for production domain
 
@@ -169,6 +184,7 @@ NODE_ENV=staging DATABASE_URL=staging_url npm run setup:staging
    - Test multi-domain routing
 
 ### **Domain Examples**:
+
 ```bash
 # Main platform
 https://yourdomain.com/admin          # Admin dashboard
@@ -182,6 +198,7 @@ https://another-domain.com            # Different project
 ## 📈 Monitoring & Maintenance
 
 ### **Health Checks**
+
 - **Endpoint**: `/api/health`
 - **Production**: Automated checks post-deployment
 - **Staging**: Manual verification recommended
@@ -189,16 +206,19 @@ https://another-domain.com            # Different project
 ### **Database Maintenance**
 
 #### **Production**:
+
 - ✅ Regular backups (Neon handles automatically)
 - ✅ Monitor query performance
 - ✅ Scale resources as needed
 
 #### **Staging**:
+
 - 🔄 Reset data monthly (prevent clutter)
 - 🧹 Clean test submissions regularly
 - 📊 Regenerate analytics data as needed
 
 ### **Analytics Monitoring**
+
 - **Production**: Real customer data
 - **Staging**: Test data for dashboard development
 - **Export**: Use admin dashboard export features
@@ -208,12 +228,14 @@ https://another-domain.com            # Different project
 ### **Common Issues**
 
 #### **Database Connection**
+
 ```bash
 # Verify connection
 DATABASE_URL=your_url npx prisma db push
 ```
 
 #### **Migrations**
+
 ```bash
 # Check migration status (manual verification)
 DATABASE_URL=your_url npx prisma migrate status
@@ -226,12 +248,14 @@ DATABASE_URL=staging_url npx prisma migrate reset --force
 ```
 
 #### **Build Failures Related to Migrations**
+
 - ✅ **Migration included in build** - No separate migration step needed
 - ✅ **Check DATABASE_URL** - Ensure correct database connection string
 - ✅ **Migration conflicts** - Resolve by creating new migration locally first
 - ✅ **Database connectivity** - Verify database is accessible during build
 
 #### **Environment Variables**
+
 - Check Vercel Dashboard → Settings → Environment Variables
 - Ensure variables match between workflows and Vercel
 - Verify staging vs production variable names
@@ -239,6 +263,7 @@ DATABASE_URL=staging_url npx prisma migrate reset --force
 ## ✅ Deployment Checklist
 
 ### **Before First Production Deploy**:
+
 - [ ] Production database created and accessible
 - [ ] Production Clerk application configured
 - [ ] All production environment variables set in Vercel
@@ -246,6 +271,7 @@ DATABASE_URL=staging_url npx prisma migrate reset --force
 - [ ] Health check endpoint working
 
 ### **Before Each Release**:
+
 - [ ] All tests passing locally
 - [ ] Staging deployment tested and verified
 - [ ] Database migrations reviewed
@@ -253,6 +279,7 @@ DATABASE_URL=staging_url npx prisma migrate reset --force
 - [ ] Project creation and analytics working
 
 ### **Post-Deployment Verification**:
+
 - [ ] Health check passes
 - [ ] Admin authentication working
 - [ ] Project pages loading correctly
@@ -263,11 +290,13 @@ DATABASE_URL=staging_url npx prisma migrate reset --force
 ## 🎯 Cost Optimization
 
 ### **Database Costs**:
+
 - **Neon Free Tier**: 0.5GB storage, 3GB transfer
 - **Neon Pro**: $19/month (10GB storage, 100GB transfer)
 - **Vercel Postgres**: $20/month after free compute hours
 
 ### **Recommendations**:
+
 - Start with Neon free tier for production
 - Use separate staging database on free tier
 - Monitor usage and upgrade as needed
