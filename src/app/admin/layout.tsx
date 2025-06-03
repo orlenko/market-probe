@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server'
+import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import AdminSidebar from '@/components/admin/AdminSidebar'
 import AdminHeader from '@/components/admin/AdminHeader'
@@ -9,9 +9,9 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   // Protect admin routes - require authentication
-  const { userId } = await auth()
+  const user = await currentUser()
 
-  if (!userId) {
+  if (!user) {
     redirect('/sign-in')
   }
 
