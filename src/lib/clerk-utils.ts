@@ -5,12 +5,14 @@
 export function hasValidClerkKey(): boolean {
   const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
-  return !!(clerkKey &&
+  return !!(
+    clerkKey &&
     clerkKey.startsWith('pk_') &&
     clerkKey.length > 20 &&
     !clerkKey.includes('placeholder') &&
     !clerkKey.includes('ci_build') &&
-    !clerkKey.includes('test_only'));
+    !clerkKey.includes('test_only')
+  );
 }
 
 /**
