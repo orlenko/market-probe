@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma migrate deploy && prisma generate && next build",
+    "build:debug": "echo 'DATABASE_URL check:' && echo $DATABASE_URL && echo 'Running migrations...' && prisma migrate deploy && echo 'Generating Prisma client...' && prisma generate && echo 'Building Next.js...' && next build",
     "build:ci": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
