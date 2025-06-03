@@ -98,9 +98,9 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          # Required for Clerk during build (placeholder values for CI)
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_placeholder_for_ci_build_process_only
-          CLERK_SECRET_KEY: sk_test_placeholder_for_ci_build_process_only
+          # Skip Clerk during build by not providing valid keys
+          # NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: (intentionally omitted)
+          # CLERK_SECRET_KEY: (intentionally omitted)
           # Analytics and deployment vars
           NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${{ secrets.NEXT_PUBLIC_PLAUSIBLE_DOMAIN }}
           NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}

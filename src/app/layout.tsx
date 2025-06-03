@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
+import { hasValidClerkKey } from '@/lib/clerk-utils';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -33,8 +34,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const hasClerkKeys = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith('pk_');
-
   return (
     <html lang="en">
       <head>
@@ -49,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={inter.className}>
         <div className="flex min-h-screen flex-col">
-          {hasClerkKeys ? <ClerkProvider>{children}</ClerkProvider> : children}
+          {hasValidClerkKey() ? <ClerkProvider>{children}</ClerkProvider> : children}
         </div>
       </body>
     </html>

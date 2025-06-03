@@ -1,14 +1,13 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { hasValidClerkKey } from '@/lib/clerk-utils';
 
 const isProtectedRoute = createRouteMatcher(['/admin(.*)']);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-  // Only protect admin routes if Clerk is properly configured
-  const hasClerkKeys = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith('pk_');
-
-  if (isProtectedRoute(req) && hasClerkKeys) {
+  // Only protect admin routes if Clerk is properly configured with a real key
+  if (isProtectedRoute(req) && hasValidClerkKey()) {
     await auth.protect();
   }
 

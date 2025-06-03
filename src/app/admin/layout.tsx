@@ -1,14 +1,12 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import { hasValidClerkKey } from '@/lib/clerk-utils';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  // Check if Clerk is properly configured
-  const hasClerkKeys = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith('pk_');
-
   // During build or when Clerk isn't configured, render a placeholder
-  if (!hasClerkKeys) {
+  if (!hasValidClerkKey()) {
     return (
       <div className="flex h-screen bg-gray-100 items-center justify-center">
         <div className="text-center">
