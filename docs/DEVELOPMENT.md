@@ -279,3 +279,87 @@ rm -rf .next tsconfig.tsbuildinfo
 - **TypeScript Config**: `tsconfig.json`
 - **Database Schema**: `prisma/schema.prisma`
 - **Deployment Guide**: `docs/DEPLOYMENT.md`
+
+## 🔄 CI/CD Architecture Options
+
+### **Current: GitHub Actions + Vercel (Recommended)**
+
+```bash
+# Professional CI/CD Pipeline
+GitHub Actions: Quality Gates → Vercel: Deployment
+- TypeScript validation
+- ESLint + Prettier
+- Unit tests with coverage
+- Security vulnerability scanning
+- Database migration validation
+- Build verification
+→ Automatic deployment to Vercel
+```
+
+**Benefits for MarketProbe:**
+- ✅ Comprehensive quality assurance before deployment
+- ✅ Security scanning for business application
+- ✅ Database migration validation
+- ✅ Team collaboration with PR status checks
+- ✅ Parallel test execution for faster feedback
+- ✅ Industry-standard DevOps practices
+
+### **Alternative: Vercel-Only CI**
+
+```json
+// vercel.json - Simplified approach
+{
+  "buildCommand": "npm run quality && npm run build",
+  "installCommand": "npm ci"
+}
+```
+
+**When to Consider:**
+- Solo developer projects
+- Simple applications without databases
+- Rapid prototyping needs
+- Cost-sensitive projects (GitHub Actions limits)
+
+**Trade-offs:**
+- ❌ Less comprehensive testing
+- ❌ No parallel job execution
+- ❌ Limited security scanning
+- ❌ Weaker quality gates
+
+### **Hybrid Approach: Essential CI**
+
+If you want to simplify while keeping quality gates:
+
+```yaml
+# Simplified GitHub Actions
+jobs:
+  essential-checks:
+    steps:
+      - TypeScript + ESLint + Tests (combined)
+      - Security scan
+      - Build verification
+→ Deploy to Vercel
+```
+
+**Best of Both Worlds:**
+- ✅ Essential quality gates maintained
+- ✅ Reduced complexity vs full pipeline
+- ✅ Faster than comprehensive CI
+- ✅ Still prevents bad deployments
+
+### **Migration Strategy**
+
+If you want to try Vercel-only:
+
+1. **Test Phase**: Temporarily disable GitHub Actions
+2. **Update vercel.json**: Add comprehensive build command
+3. **Monitor**: Watch for any quality issues that slip through
+4. **Decide**: Keep simplified or return to comprehensive CI
+
+```json
+// vercel.json for testing Vercel-only approach
+{
+  "buildCommand": "npm run type-check && npm run lint && npm run test:ci && npm run build",
+  "installCommand": "npm ci"
+}
+```
