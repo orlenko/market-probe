@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// MarketProbe 2.0 Database Schema
+// Multi-project SaaS platform for idea validation landing pages
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Projects table - each project represents a separate idea/landing page
+model Project {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique @db.VarChar(50)
+  title       String   @db.VarChar(200)
+  description String?  @db.Text
+  domain      String?  @unique @db.VarChar(255) // null if subpath hosted, custom domain if mapped
+  status      ProjectStatus @default(DRAFT)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  pageConfigs     PageConfig[]
+  formSubmissions FormSubmission[]
+  analyticsEvents AnalyticsEvent[]
+
+  @@map("projects")
+}
+
+// Page configuration for each project (content + design settings)
+model PageConfig {
+  id             Int      @id @default(autoincrement())
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      Int      @map("project_id")
+  templateConfig Json     @map("template_config") // dynamic content: headline, CTA, features, etc.
+  designConfig   Json     @map("design_config")   // colors, fonts, layout preferences, etc.
+  isActive       Boolean  @default(true) @map("is_active") // for A/B testing multiple configs
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("page_configs")
+}
+
+// Form submissions from landing pages
+model FormSubmission {
+  id          Int      @id @default(autoincrement())
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   Int      @map("project_id")
+  submittedAt DateTime @default(now()) @map("submitted_at")
+  formData    Json     @map("form_data") // flexible storage for name, email, message, etc.
+  ipHash      String?  @map("ip_hash") @db.VarChar(64) // hashed IP for spam protection
+  userAgent   String?  @map("user_agent") @db.Text
+  referrer    String?  @db.VarChar(500)
+  utmSource   String?  @map("utm_source") @db.VarChar(100)
+  utmMedium   String?  @map("utm_medium") @db.VarChar(100)
+  utmCampaign String?  @map("utm_campaign") @db.VarChar(100)
+
+  @@map("form_submissions")
+  @@index([projectId, submittedAt])
+  @@index([submittedAt])
+}
+
+// Analytics events for tracking page views and user interactions
+model AnalyticsEvent {
+  id        Int           @id @default(autoincrement())
+  project   Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId Int           @map("project_id")
+  eventType AnalyticsEventType @map("event_type")
+  timestamp DateTime      @default(now())
+  ipHash    String?       @map("ip_hash") @db.VarChar(64) // hashed IP for privacy
+  userAgent String?       @map("user_agent") @db.Text
+  referrer  String?       @db.VarChar(500)
+  pathname  String?       @db.VarChar(500)
+  utmSource   String?     @map("utm_source") @db.VarChar(100)
+  utmMedium   String?     @map("utm_medium") @db.VarChar(100)
+  utmCampaign String?     @map("utm_campaign") @db.VarChar(100)
+  metadata  Json?         // additional event-specific data
+
+  @@map("analytics_events")
+  @@index([projectId, timestamp])
+  @@index([eventType, timestamp])
+  @@index([timestamp])
+}
+
+// Enums for type safety
+enum ProjectStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+  GRADUATED // moved to production/success
+
+  @@map("project_status")
+}
+
+enum AnalyticsEventType {
+  PAGE_VIEW
+  FORM_SUBMISSION
+  BUTTON_CLICK
+  LINK_CLICK
+  SCROLL_DEPTH
+  SESSION_START
+
+  @@map("analytics_event_type")
+}

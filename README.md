@@ -29,17 +29,20 @@ A reusable landing page template for market validation of product ideas. Quickly
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yourusername/market-probe.git
    cd market-probe
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -72,3 +75,29 @@ Refer to `doc/dev-plan.md` for customization guidelines and project structure.
 ## License
 
 [MIT](LICENSE)
+
+## 🛠️ Development
+
+MarketProbe uses **automated formatting** and **database migrations** for a smooth developer experience:
+
+- ✅ **Auto-formatting**: Push code, formatting happens automatically
+- ✅ **Auto-migrations**: Database schema updates during deployment
+- ✅ **Type safety**: Full TypeScript coverage with Prisma ORM
+- ✅ **Testing**: Jest + React Testing Library with coverage reports
+
+### Quick Start:
+
+```bash
+# Set up development environment
+npm ci && npm run setup:local
+
+# Start development (with hot reload)
+npm run dev
+
+# Don't worry about formatting - it's automatic!
+git add . && git commit -m "Add feature" && git push
+```
+
+📖 **[Read the Development Guide](docs/DEVELOPMENT.md)** for detailed workflow information.
+
+## 📖 Documentation

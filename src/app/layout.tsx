@@ -1,41 +1,39 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { ClerkProvider } from '@clerk/nextjs';
+import { hasValidClerkKey } from '@/lib/clerk-utils';
+import './globals.css';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Market Probe | Validate Your Product Idea",
-  description: "Sign up to get early access to our upcoming product",
+  title: 'Market Probe | Validate Your Product Idea',
+  description: 'Sign up to get early access to our upcoming product',
   openGraph: {
-    title: "Market Probe | Validate Your Product Idea",
-    description: "Sign up to get early access to our upcoming product",
-    url: "https://yourproductdomain.com",
-    siteName: "Market Probe",
+    title: 'Market Probe | Validate Your Product Idea',
+    description: 'Sign up to get early access to our upcoming product',
+    url: 'https://yourproductdomain.com',
+    siteName: 'Market Probe',
     images: [
       {
-        url: "/og-image.png",
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: "Market Probe",
+        alt: 'Market Probe',
       },
     ],
-    locale: "en_US",
-    type: "website",
+    locale: 'en_US',
+    type: 'website',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Market Probe | Validate Your Product Idea",
-    description: "Sign up to get early access to our upcoming product",
-    images: ["/og-image.png"],
+    card: 'summary_large_image',
+    title: 'Market Probe | Validate Your Product Idea',
+    description: 'Sign up to get early access to our upcoming product',
+    images: ['/og-image.png'],
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -50,7 +48,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <div className="flex min-h-screen flex-col">
-          {children}
+          {hasValidClerkKey() ? <ClerkProvider>{children}</ClerkProvider> : children}
         </div>
       </body>
     </html>

@@ -7,10 +7,13 @@ Thank you for your interest in contributing to Market-Probe! This document provi
 We follow a simplified GitHub Flow for this project:
 
 1. **Create a branch**: Create a new branch from `main` for your feature or bugfix
+
    ```
    git checkout -b feature/your-feature-name
    ```
+
    or
+
    ```
    git checkout -b fix/your-bugfix-name
    ```
@@ -18,6 +21,7 @@ We follow a simplified GitHub Flow for this project:
 2. **Make changes**: Make your changes in the branch
 
 3. **Test locally**: Ensure your changes work as expected
+
    ```
    npm run lint
    npm run test
@@ -25,11 +29,13 @@ We follow a simplified GitHub Flow for this project:
    ```
 
 4. **Commit your changes**: Use clear and descriptive commit messages
+
    ```
    git commit -m "Add feature: clear description of the change"
    ```
 
 5. **Push to GitHub**:
+
    ```
    git push -u origin feature/your-feature-name
    ```

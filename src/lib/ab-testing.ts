@@ -27,7 +27,7 @@ export const selectVariant = (variants: ABTestVariant[] = defaultVariants): ABTe
   // Check if a variant is already stored in session
   const storedVariant = sessionStorage.getItem('abTestVariant');
   if (storedVariant) {
-    const found = variants.find((v) => v.id === storedVariant);
+    const found = variants.find(v => v.id === storedVariant);
     if (found) return found;
   }
 
