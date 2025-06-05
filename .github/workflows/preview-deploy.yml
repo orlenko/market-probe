@@ -6,6 +6,11 @@ on:
   push:
     branches: [develop]
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 env:
   NODE_VERSION: 18
 
@@ -27,12 +32,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build application (CI mode)
-        run: npm run build:ci
-        env:
-          # Mock DATABASE_URL for Prisma client generation (no actual DB needed for preview builds)
-          DATABASE_URL: "postgresql://preview:preview@localhost:5432/preview_test"
-          # Let Vercel handle the actual environment variables during deployment
+      - name: Run quality checks
+        run: |
+          echo "🔍 Running quality checks before deployment..."
+          npm run type-check
+          npm run lint
+          echo "✅ Quality checks passed - ready for Vercel deployment"
 
       - name: Deploy to Vercel (Preview)
         uses: amondnet/vercel-action@v25
