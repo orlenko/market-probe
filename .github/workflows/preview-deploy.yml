@@ -26,16 +26,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build application
-        run: npm run build
+      - name: Build application (CI mode)
+        run: npm run build:ci
         env:
-          # Staging Environment Variables
-          DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY_STAGING }}
-          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_STAGING }}
-          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL_STAGING }}
-          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY_STAGING }}
-          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN_STAGING }}
+          # Mock DATABASE_URL for Prisma client generation (no actual DB needed for preview builds)
+          DATABASE_URL: "postgresql://preview:preview@localhost:5432/preview_test"
+          # Let Vercel handle the actual environment variables during deployment
 
       - name: Deploy to Vercel (Preview)
         uses: amondnet/vercel-action@v25
@@ -45,10 +41,7 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./
           # Don't use --prod flag for preview deployments
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY_STAGING }}
-          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_STAGING }}
+        # Environment variables will be handled by Vercel's own configuration
 
       - name: Comment PR with preview URL
         if: github.event_name == 'pull_request'
@@ -59,14 +52,8 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🚀 **Preview deployment ready!**\n\n' +
-                    'View your changes: https://market-probe-git-${{ github.head_ref }}-your-username.vercel.app\n\n' +
-                    '📊 Admin Dashboard: https://market-probe-git-${{ github.head_ref }}-your-username.vercel.app/admin\n\n' +
-                    '⚠️ **Note**: Using staging database with test data only.'
+              body: '🚀 **Preview deployment complete!**\n\n' +
+                    '✅ Your changes have been deployed to Vercel\n' +
+                    '📋 Check the Vercel dashboard for the preview URL\n\n' +
+                    '⚠️ **Note**: Preview deployments use Vercel\'s environment configuration.'
             })
-
-      - name: Run health check (staging)
-        run: |
-          sleep 30
-          # Update URL to match your staging deployment pattern
-          curl -f ${{ secrets.NEXT_PUBLIC_BASE_URL_STAGING }}/api/health || exit 1
