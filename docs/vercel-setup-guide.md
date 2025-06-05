@@ -22,14 +22,37 @@ To complete the preview deployment, add these secrets to your GitHub repository:
    - **Project ID**: In project settings → General
    - **Org ID**: In your account settings
 
-### **Step 2: Add GitHub Secrets**
+### **Step 2: Create Environments & Add Secrets (Recommended)**
 
-Go to: `https://github.com/orlenko/market-probe/settings/secrets/actions`
+**Option A: Environment Secrets (Recommended)**
 
-Add these secrets:
+1. **Create Environments**:
+   - Go to: `https://github.com/orlenko/market-probe/settings/environments`
+   - Create environment: `preview`
+   - Create environment: `production`
 
+2. **Add Secrets to Each Environment**:
+
+   **For `preview` environment:**
+   ```bash
+   VERCEL_TOKEN=your_vercel_token_here
+   VERCEL_ORG_ID=your_org_id_here
+   VERCEL_PROJECT_ID=your_project_id_here
+   ```
+
+   **For `production` environment:**
+   ```bash
+   VERCEL_TOKEN=your_vercel_token_here (same or different)
+   VERCEL_ORG_ID=your_org_id_here
+   VERCEL_PROJECT_ID=your_project_id_here (could be different project)
+   ```
+
+**Option B: Repository Secrets (Simpler)**
+
+If you prefer simpler setup, go to: `https://github.com/orlenko/market-probe/settings/secrets/actions`
+
+Add these repository secrets:
 ```bash
-# Required for Vercel Deployment
 VERCEL_TOKEN=your_vercel_token_here
 VERCEL_ORG_ID=your_org_id_here
 VERCEL_PROJECT_ID=your_project_id_here

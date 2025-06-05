@@ -13,6 +13,7 @@ jobs:
   deploy-preview:
     name: Deploy Preview/Staging
     runs-on: ubuntu-latest
+    environment: preview
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
