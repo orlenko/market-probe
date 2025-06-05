@@ -248,3 +248,66 @@ marketprobe-app/
 - **Performance**: Sub-2s page load times for landing pages
 - **Scalability**: Support for 100+ concurrent projects
 - **Usability**: Admin dashboard completion of project setup in under 5 minutes
+
+## 🔧 CI/CD Platform Optimization
+
+### **Responsibility Division: GitHub Actions vs Vercel**
+
+**Principle**: Leverage each platform's strengths, avoid duplication
+
+#### **GitHub Actions - Quality Gates & Validation**
+- ✅ **Code Quality**: TypeScript, ESLint, Prettier checks
+- ✅ **Testing**: Unit tests, integration tests, coverage reporting
+- ✅ **Security**: Vulnerability scanning, dependency audits
+- ✅ **Database**: Migration validation, schema checks
+- ✅ **Team Collaboration**: PR status checks, automated reviews
+- ✅ **Compliance**: Security policies, quality thresholds
+- ❌ **Avoid**: Application building for deployment (let Vercel optimize this)
+
+#### **Vercel - Deployment & Performance**
+- ✅ **Building**: Next.js-optimized build process with environment variables
+- ✅ **Deployment**: CDN distribution, edge functions, preview environments
+- ✅ **Performance**: Bundle optimization, image optimization, caching
+- ✅ **Environments**: Environment-specific builds with proper secrets
+- ✅ **Monitoring**: Real-time metrics, performance insights
+- ❌ **Avoid**: Comprehensive testing (GitHub Actions handles this better)
+
+### **Optimization Strategy**
+
+#### **Current State Analysis**
+- [ ] **Audit Current Workflows**: Identify any duplicated build/test steps
+- [ ] **Measure Build Times**: Baseline performance for both platforms
+- [ ] **Review Resource Usage**: GitHub Actions minutes vs Vercel build time
+
+#### **Optimization Opportunities**
+- [ ] **Remove Redundant Builds**: GitHub Actions should validate, not build for deployment
+- [ ] **Optimize Test Distribution**: Parallel execution on GitHub, streamlined deployment on Vercel
+- [ ] **Environment Strategy**: GitHub validates with mocks, Vercel builds with real env vars
+- [ ] **Artifact Reuse**: Consider passing validated code to Vercel vs rebuilding
+
+#### **Implementation Plan**
+1. **Phase 1**: Map current duplication points
+2. **Phase 2**: Optimize GitHub Actions for validation-only
+3. **Phase 3**: Optimize Vercel for deployment-only
+4. **Phase 4**: Measure performance improvements
+
+### **Target Workflow Architecture**
+
+```bash
+# Optimized Pipeline
+Developer Push → GitHub Actions (Quality Gates) → ✅ → Vercel (Deploy)
+                     ↓
+                 - Type checking
+                 - Linting
+                 - Testing
+                 - Security scan
+                 - DB validation
+                     ↓
+                 Pass/Fail Decision → Vercel builds & deploys optimally
+```
+
+### **Success Metrics for Optimization**
+- **Reduced Build Time**: Target 30% faster end-to-end deployment
+- **Resource Efficiency**: Minimize GitHub Actions minutes while maintaining quality
+- **Clear Separation**: No duplicate validation/build steps between platforms
+- **Maintained Quality**: All quality gates preserved during optimization
