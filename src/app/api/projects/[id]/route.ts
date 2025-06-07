@@ -247,6 +247,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         {
           error: 'Validation failed',
           fields: fieldErrors,
+          details: error.errors,
         },
         { status: 400 }
       );

@@ -1,6 +1,7 @@
 # Vercel Deployment Setup Guide
 
 ## 🎯 **Current Status**
+
 ✅ **GitHub Actions CI**: Working perfectly (37s build time)
 ❌ **Vercel Deployment**: Missing configuration secrets
 
@@ -13,6 +14,7 @@ To complete the preview deployment, add these secrets to your GitHub repository:
 1. **Go to Vercel Dashboard**: https://vercel.com/dashboard
 2. **Find Your Project**: Look for `market-probe` project
 3. **Get Vercel Token**:
+
    - Go to https://vercel.com/account/tokens
    - Create new token: "GitHub Actions Deploy"
    - Copy the token value
@@ -27,6 +29,7 @@ To complete the preview deployment, add these secrets to your GitHub repository:
 **Option A: Environment Secrets (Recommended)**
 
 1. **Create Environments**:
+
    - Go to: `https://github.com/orlenko/market-probe/settings/environments`
    - Create environment: `preview`
    - Create environment: `production`
@@ -34,6 +37,7 @@ To complete the preview deployment, add these secrets to your GitHub repository:
 2. **Add Secrets to Each Environment**:
 
    **For `preview` environment:**
+
    ```bash
    VERCEL_TOKEN=your_vercel_token_here
    VERCEL_ORG_ID=your_org_id_here
@@ -41,6 +45,7 @@ To complete the preview deployment, add these secrets to your GitHub repository:
    ```
 
    **For `production` environment:**
+
    ```bash
    VERCEL_TOKEN=your_vercel_token_here (same or different)
    VERCEL_ORG_ID=your_org_id_here
@@ -52,6 +57,7 @@ To complete the preview deployment, add these secrets to your GitHub repository:
 If you prefer simpler setup, go to: `https://github.com/orlenko/market-probe/settings/secrets/actions`
 
 Add these repository secrets:
+
 ```bash
 VERCEL_TOKEN=your_vercel_token_here
 VERCEL_ORG_ID=your_org_id_here
@@ -80,6 +86,7 @@ git push origin multi-domain
 ## 🔍 **Verification Checklist**
 
 After adding secrets:
+
 - [ ] Push triggers both GitHub Actions and Vercel deployment
 - [ ] No "vercel-token" error in GitHub Actions logs
 - [ ] Vercel creates preview deployment successfully
@@ -89,6 +96,7 @@ After adding secrets:
 ## 📊 **Performance Baseline (So Far)**
 
 From current testing:
+
 ```bash
 GitHub Actions Build Time: 37 seconds
 - npm ci: 18s (with cache)
@@ -112,12 +120,14 @@ Once preview deployments work, we'll move to **Phase 2: Optimization Audit**:
 ## ⚠️ **Common Issues**
 
 **If Vercel deployment still fails:**
+
 - Verify token has correct permissions
 - Check project ID matches exactly
 - Ensure org ID is correct
 - Try regenerating Vercel token
 
 **If app doesn't load:**
+
 - Check Vercel function logs
 - Verify environment variables in Vercel dashboard
 - Check for build errors in Vercel deployment logs

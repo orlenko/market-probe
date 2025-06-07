@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { prisma } from '@/lib/db';
 import { ProjectWithCounts } from '@/types/admin';
-import ProjectForm from '@/components/admin/ProjectForm';
+import { TemplateConfig, DesignConfig } from '@/types/database';
+import ProjectEditTabs from '@/components/admin/ProjectEditTabs';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,11 @@ async function getProject(id: number): Promise<ProjectWithCounts | null> {
     const project = await prisma.project.findUnique({
       where: { id },
       include: {
+        pageConfigs: {
+          where: { isActive: true },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
         _count: {
           select: {
             formSubmissions: true,
@@ -25,7 +31,7 @@ async function getProject(id: number): Promise<ProjectWithCounts | null> {
       },
     });
 
-    return project as ProjectWithCounts | null;
+    return project as any;
   } catch (error) {
     console.error('Error fetching project:', error);
     return null;
@@ -95,18 +101,7 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
         </div>
       </div>
 
-      <div className="bg-white shadow rounded-lg">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">Project Details</h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Update your project information and settings.
-          </p>
-        </div>
-
-        <div className="p-6">
-          <ProjectForm project={project} mode="edit" />
-        </div>
-      </div>
+      <ProjectEditTabs project={project} />
     </div>
   );
 }
