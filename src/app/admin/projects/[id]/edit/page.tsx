@@ -20,7 +20,7 @@ async function getProject(id: number): Promise<ProjectWithCounts | null> {
         pageConfigs: {
           where: { isActive: true },
           orderBy: { createdAt: 'desc' },
-          take: 1
+          take: 1,
         },
         _count: {
           select: {

@@ -1378,6 +1378,7 @@ Process completed with exit code 1.
 ```
 
 **Issues Identified**:
+
 1. **Ref Mismatch**: Deploy workflow checked `refs/pull/2/merge` but CI ran on different refs
 2. **External Dependency**: `wait-on-check-action` required Ruby/Bundler setup adding complexity
 3. **Timing Issues**: Race conditions between workflow triggers and check completion
@@ -1524,6 +1525,7 @@ The environment variable `DATABASE_URL` resolved to an empty string.
 ```
 
 **Issues Identified**:
+
 1. **Missing Staging Config**: `DATABASE_URL_STAGING` secret not configured in GitHub
 2. **Wrong Build Script**: Preview deployments using migration-enabled build script
 3. **Environment Mismatch**: CI trying to run database operations without database access
@@ -1533,15 +1535,15 @@ The environment variable `DATABASE_URL` resolved to an empty string.
 ```yaml
 # Before (Problematic)
 - name: Build application
-  run: npm run build  # Includes migrations, needs real DATABASE_URL
+  run: npm run build # Includes migrations, needs real DATABASE_URL
   env:
-    DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}  # Empty/missing
+    DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }} # Empty/missing
 
 # After (Fixed)
 - name: Build application (CI mode)
-  run: npm run build:ci  # No migrations, mock DATABASE_URL only
+  run: npm run build:ci # No migrations, mock DATABASE_URL only
   env:
-    DATABASE_URL: "postgresql://preview:preview@localhost:5432/preview_test"
+    DATABASE_URL: 'postgresql://preview:preview@localhost:5432/preview_test'
 ```
 
 #### Tools/Commands Run:
@@ -1561,11 +1563,11 @@ The environment variable `DATABASE_URL` resolved to an empty string.
 
 #### Build Process Comparison:
 
-| Deployment Type | Build Script  | Database Required | Environment Variables | Purpose                    |
-| --------------- | ------------- | ----------------- | --------------------- | -------------------------- |
-| **Preview**     | `build:ci`    | ❌ Mock only      | Vercel handles        | Test code changes          |
-| **Production**  | `build`       | ✅ Real DB        | GitHub secrets        | Deploy with migrations     |
-| **Staging**     | `build`       | ✅ Staging DB     | GitHub secrets        | Deploy with migrations     |
+| Deployment Type | Build Script | Database Required | Environment Variables | Purpose                |
+| --------------- | ------------ | ----------------- | --------------------- | ---------------------- |
+| **Preview**     | `build:ci`   | ❌ Mock only      | Vercel handles        | Test code changes      |
+| **Production**  | `build`      | ✅ Real DB        | GitHub secrets        | Deploy with migrations |
+| **Staging**     | `build`      | ✅ Staging DB     | GitHub secrets        | Deploy with migrations |
 
 #### Testing Results:
 
@@ -1626,18 +1628,21 @@ The environment variable `DATABASE_URL` resolved to an empty string.
 #### Changes Made:
 
 - **Fixed GitHub Actions security scan deprecation**
+
   - Updated CodeQL action from deprecated `@v2` to current `@v3`
   - Added proper `security-events: write` permissions to security-scan job
   - Resolved "Resource not accessible by integration" errors
   - Eliminated deprecation warnings in CI pipeline
 
 - **Configured production environment variables in Vercel**
+
   - Added `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` with live Clerk credentials
   - Added `CLERK_SECRET_KEY` for server-side authentication
   - Set `NEXT_PUBLIC_BASE_URL` to production domain
   - Ensured all variables properly configured for "Production" environment
 
 - **Successfully set up custom domain routing**
+
   - Configured `marketprobe.bjola.ca` as custom domain in Vercel
   - Updated DNS records at Netfirms with correct CNAME configuration
   - Verified domain propagation and SSL certificate activation
@@ -1682,22 +1687,28 @@ The environment variable `DATABASE_URL` resolved to an empty string.
 #### Problems Solved:
 
 **Issue 1**: GitHub Actions security scan failing
+
 ```bash
 Error: CodeQL Action major versions v1 and v2 have been deprecated
 Warning: Resource not accessible by integration
 ```
+
 **Solution**: Updated to `@v3` and added `security-events: write` permissions
 
 **Issue 2**: Clerk authentication error in production
+
 ```bash
 Error: @clerk/nextjs: Missing publishableKey
 ```
+
 **Solution**: Added `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` to Vercel Production environment
 
 **Issue 3**: Google OAuth redirect_uri_mismatch
+
 ```bash
 Error 400: redirect_uri_mismatch
 ```
+
 **Solution**: Retrieved exact Clerk redirect URI and updated Google Cloud Console
 
 #### Architecture Achievements:

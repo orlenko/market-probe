@@ -20,7 +20,12 @@ const THEME_OPTIONS = [
   { value: 'creative', label: 'Creative', description: 'Artistic and unique' },
 ];
 
-export default function ContentEditor({ templateConfig, designConfig, onSave, isLoading }: ContentEditorProps) {
+export default function ContentEditor({
+  templateConfig,
+  designConfig,
+  onSave,
+  isLoading,
+}: ContentEditorProps) {
   const [activeTab, setActiveTab] = useState<'content' | 'design'>('content');
   const [template, setTemplate] = useState<TemplateConfig>(templateConfig);
 
@@ -28,7 +33,9 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
   const validThemes = ['modern', 'minimal', 'bold', 'eco', 'tech', 'creative'] as const;
   const validatedDesignConfig = {
     ...designConfig,
-    theme: validThemes.includes(designConfig.theme as any) ? designConfig.theme : 'modern' as const
+    theme: validThemes.includes(designConfig.theme as any)
+      ? designConfig.theme
+      : ('modern' as const),
   };
 
   const [design, setDesign] = useState<DesignConfig>(validatedDesignConfig);
@@ -57,7 +64,11 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
     });
   };
 
-  const updateFeature = (index: number, field: keyof TemplateConfig['features'][0], value: string) => {
+  const updateFeature = (
+    index: number,
+    field: keyof TemplateConfig['features'][0],
+    value: string
+  ) => {
     const newFeatures = [...template.features];
     newFeatures[index] = { ...newFeatures[index], [field]: value };
     setTemplate({ ...template, features: newFeatures });
@@ -69,7 +80,10 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
       ...template,
       socialProof: {
         ...socialProof,
-        testimonials: [...socialProof.testimonials, { name: '', company: '', text: '', avatar: '' }],
+        testimonials: [
+          ...socialProof.testimonials,
+          { name: '', company: '', text: '', avatar: '' },
+        ],
       },
     });
   };
@@ -144,7 +158,7 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
       {/* Tab Navigation */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          {tabs.map((tab) => (
+          {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
@@ -169,24 +183,20 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
             <h3 className="text-lg font-medium text-gray-900 mb-4">Hero Section</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Headline
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Headline</label>
                 <input
                   type="text"
                   value={template.headline}
-                  onChange={(e) => setTemplate({ ...template, headline: e.target.value })}
+                  onChange={e => setTemplate({ ...template, headline: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Your amazing product headline..."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subheadline
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Subheadline</label>
                 <textarea
                   value={template.subheadline}
-                  onChange={(e) => setTemplate({ ...template, subheadline: e.target.value })}
+                  onChange={e => setTemplate({ ...template, subheadline: e.target.value })}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Explain the value proposition in more detail..."
@@ -199,7 +209,7 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                 <input
                   type="text"
                   value={template.ctaText}
-                  onChange={(e) => setTemplate({ ...template, ctaText: e.target.value })}
+                  onChange={e => setTemplate({ ...template, ctaText: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Join the Waitlist"
                 />
@@ -235,13 +245,13 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                     <input
                       type="text"
                       value={feature.title}
-                      onChange={(e) => updateFeature(index, 'title', e.target.value)}
+                      onChange={e => updateFeature(index, 'title', e.target.value)}
                       placeholder="Feature title"
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <textarea
                       value={feature.description}
-                      onChange={(e) => updateFeature(index, 'description', e.target.value)}
+                      onChange={e => updateFeature(index, 'description', e.target.value)}
                       placeholder="Feature description"
                       rows={2}
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -249,7 +259,7 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                     <input
                       type="text"
                       value={feature.icon || ''}
-                      onChange={(e) => updateFeature(index, 'icon', e.target.value)}
+                      onChange={e => updateFeature(index, 'icon', e.target.value)}
                       placeholder="Icon name (optional)"
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -291,21 +301,21 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                       <input
                         type="text"
                         value={testimonial.name}
-                        onChange={(e) => updateTestimonial(index, 'name', e.target.value)}
+                        onChange={e => updateTestimonial(index, 'name', e.target.value)}
                         placeholder="Name"
                         className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                       <input
                         type="text"
                         value={testimonial.company || ''}
-                        onChange={(e) => updateTestimonial(index, 'company', e.target.value)}
+                        onChange={e => updateTestimonial(index, 'company', e.target.value)}
                         placeholder="Company (optional)"
                         className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <textarea
                       value={testimonial.text}
-                      onChange={(e) => updateTestimonial(index, 'text', e.target.value)}
+                      onChange={e => updateTestimonial(index, 'text', e.target.value)}
                       placeholder="Testimonial text"
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -318,14 +328,16 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
             {/* Metrics */}
             <div>
               <h4 className="text-md font-medium text-gray-700 mb-3">Metrics</h4>
-              <div className="text-sm text-gray-500 mb-2">Add key numbers to showcase your traction</div>
+              <div className="text-sm text-gray-500 mb-2">
+                Add key numbers to showcase your traction
+              </div>
               <div className="space-y-2">
                 {Object.entries(template.socialProof?.metrics || {}).map(([key, value], index) => (
                   <div key={index} className="grid grid-cols-2 gap-3">
                     <input
                       type="text"
                       value={key}
-                      onChange={(e) => {
+                      onChange={e => {
                         const newMetrics = { ...template.socialProof?.metrics };
                         delete newMetrics[key];
                         newMetrics[e.target.value] = value;
@@ -333,7 +345,7 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                           ...template,
                           socialProof: {
                             testimonials: template.socialProof?.testimonials || [],
-                            metrics: newMetrics
+                            metrics: newMetrics,
                           } as any,
                         });
                       }}
@@ -343,14 +355,14 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                     <input
                       type="text"
                       value={value}
-                      onChange={(e) => {
+                      onChange={e => {
                         const newMetrics = { ...template.socialProof?.metrics };
                         newMetrics[key] = e.target.value;
                         setTemplate({
                           ...template,
                           socialProof: {
                             testimonials: template.socialProof?.testimonials || [],
-                            metrics: newMetrics
+                            metrics: newMetrics,
                           } as any,
                         });
                       }}
@@ -407,13 +419,13 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                     <input
                       type="text"
                       value={faq.question}
-                      onChange={(e) => updateFAQ(index, 'question', e.target.value)}
+                      onChange={e => updateFAQ(index, 'question', e.target.value)}
                       placeholder="Question"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <textarea
                       value={faq.answer}
-                      onChange={(e) => updateFAQ(index, 'answer', e.target.value)}
+                      onChange={e => updateFAQ(index, 'answer', e.target.value)}
                       placeholder="Answer"
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -433,7 +445,7 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
           <div className="bg-white border rounded-lg p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Theme</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {THEME_OPTIONS.map((theme) => (
+              {THEME_OPTIONS.map(theme => (
                 <label
                   key={theme.value}
                   className={`relative flex cursor-pointer rounded-lg border p-4 hover:bg-gray-50 ${
@@ -447,9 +459,11 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                     name="theme"
                     value={theme.value}
                     checked={design.theme === theme.value}
-                    onChange={(e) => {
+                    onChange={e => {
                       const newTheme = e.target.value as DesignConfig['theme'];
-                      if (['modern', 'minimal', 'bold', 'eco', 'tech', 'creative'].includes(newTheme)) {
+                      if (
+                        ['modern', 'minimal', 'bold', 'eco', 'tech', 'creative'].includes(newTheme)
+                      ) {
                         setDesign({ ...design, theme: newTheme });
                       }
                     }}
@@ -476,13 +490,13 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                   <input
                     type="color"
                     value={design.primaryColor}
-                    onChange={(e) => setDesign({ ...design, primaryColor: e.target.value })}
+                    onChange={e => setDesign({ ...design, primaryColor: e.target.value })}
                     className="h-10 w-20 border border-gray-300 rounded-md"
                   />
                   <input
                     type="text"
                     value={design.primaryColor}
-                    onChange={(e) => setDesign({ ...design, primaryColor: e.target.value })}
+                    onChange={e => setDesign({ ...design, primaryColor: e.target.value })}
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="#6366f1"
                   />
@@ -496,13 +510,13 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                   <input
                     type="color"
                     value={design.secondaryColor || '#8b5cf6'}
-                    onChange={(e) => setDesign({ ...design, secondaryColor: e.target.value })}
+                    onChange={e => setDesign({ ...design, secondaryColor: e.target.value })}
                     className="h-10 w-20 border border-gray-300 rounded-md"
                   />
                   <input
                     type="text"
                     value={design.secondaryColor || ''}
-                    onChange={(e) => setDesign({ ...design, secondaryColor: e.target.value })}
+                    onChange={e => setDesign({ ...design, secondaryColor: e.target.value })}
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="#8b5cf6"
                   />
@@ -516,33 +530,31 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
                   <input
                     type="color"
                     value={design.backgroundColor}
-                    onChange={(e) => setDesign({ ...design, backgroundColor: e.target.value })}
+                    onChange={e => setDesign({ ...design, backgroundColor: e.target.value })}
                     className="h-10 w-20 border border-gray-300 rounded-md"
                   />
                   <input
                     type="text"
                     value={design.backgroundColor}
-                    onChange={(e) => setDesign({ ...design, backgroundColor: e.target.value })}
+                    onChange={e => setDesign({ ...design, backgroundColor: e.target.value })}
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="#ffffff"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Text Color
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Text Color</label>
                 <div className="flex items-center space-x-3">
                   <input
                     type="color"
                     value={design.textColor}
-                    onChange={(e) => setDesign({ ...design, textColor: e.target.value })}
+                    onChange={e => setDesign({ ...design, textColor: e.target.value })}
                     className="h-10 w-20 border border-gray-300 rounded-md"
                   />
                   <input
                     type="text"
                     value={design.textColor}
-                    onChange={(e) => setDesign({ ...design, textColor: e.target.value })}
+                    onChange={e => setDesign({ ...design, textColor: e.target.value })}
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="#1f2937"
                   />
@@ -555,12 +567,10 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
           <div className="bg-white border rounded-lg p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Typography</h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Font Family
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Font Family</label>
               <select
                 value={design.fontFamily}
-                onChange={(e) => setDesign({ ...design, fontFamily: e.target.value })}
+                onChange={e => setDesign({ ...design, fontFamily: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="Inter">Inter</option>
@@ -583,7 +593,7 @@ export default function ContentEditor({ templateConfig, designConfig, onSave, is
               </label>
               <textarea
                 value={design.customCSS || ''}
-                onChange={(e) => setDesign({ ...design, customCSS: e.target.value })}
+                onChange={e => setDesign({ ...design, customCSS: e.target.value })}
                 rows={6}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
                 placeholder="/* Custom CSS rules */&#10;.hero-section {&#10;  /* Your custom styles */&#10;}"

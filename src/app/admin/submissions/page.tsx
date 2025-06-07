@@ -2,7 +2,12 @@ import { Suspense } from 'react';
 import { prisma } from '@/lib/db';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
-import { EyeIcon, EnvelopeIcon, BuildingOfficeIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
+import {
+  EyeIcon,
+  EnvelopeIcon,
+  BuildingOfficeIcon,
+  ChatBubbleLeftIcon,
+} from '@heroicons/react/24/outline';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -77,7 +82,7 @@ function SubmissionsList({ submissions }: { submissions: FormSubmissionWithProje
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {submissions.map((submission) => (
+          {submissions.map(submission => (
             <tr key={submission.id} className="hover:bg-gray-50">
               <td className="px-6 py-4">
                 <div className="flex items-start space-x-3">
@@ -90,9 +95,7 @@ function SubmissionsList({ submissions }: { submissions: FormSubmissionWithProje
                     <div className="text-sm font-medium text-gray-900">
                       {submission.formData.name || 'Anonymous'}
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {submission.formData.email}
-                    </div>
+                    <div className="text-sm text-gray-500">{submission.formData.email}</div>
                     {submission.formData.company && (
                       <div className="text-xs text-gray-400 flex items-center mt-1">
                         <BuildingOfficeIcon className="h-3 w-3 mr-1" />
@@ -115,9 +118,7 @@ function SubmissionsList({ submissions }: { submissions: FormSubmissionWithProje
                 >
                   {submission.project.title}
                 </Link>
-                <div className="text-xs text-gray-500">
-                  /p/{submission.project.slug}
-                </div>
+                <div className="text-xs text-gray-500">/p/{submission.project.slug}</div>
               </td>
               <td className="px-6 py-4">
                 {submission.utmSource || submission.utmMedium ? (
@@ -171,11 +172,13 @@ export default async function SubmissionsPage() {
       </div>
 
       <div className="mt-8">
-        <Suspense fallback={
-          <div className="animate-pulse">
-            <div className="h-64 bg-gray-200 rounded-lg"></div>
-          </div>
-        }>
+        <Suspense
+          fallback={
+            <div className="animate-pulse">
+              <div className="h-64 bg-gray-200 rounded-lg"></div>
+            </div>
+          }
+        >
           <SubmissionsLoadingWrapper />
         </Suspense>
       </div>

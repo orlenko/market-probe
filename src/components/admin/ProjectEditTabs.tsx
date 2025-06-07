@@ -14,9 +14,9 @@ interface ProjectEditTabsProps {
 export default function ProjectEditTabs({ project }: ProjectEditTabsProps) {
   const [activeTab, setActiveTab] = useState<'details' | 'content'>('details');
 
-    // Get the page config (there should be one per project)
+  // Get the page config (there should be one per project)
   const pageConfig = (project as any).pageConfigs?.[0];
-  const templateConfig = pageConfig?.templateConfig as TemplateConfig || {
+  const templateConfig = (pageConfig?.templateConfig as TemplateConfig) || {
     headline: 'Your Amazing Product',
     subheadline: 'Transform your business with our innovative solution',
     ctaText: 'Join the Waitlist',
@@ -30,19 +30,25 @@ export default function ProjectEditTabs({ project }: ProjectEditTabsProps) {
     },
   };
 
-  const designConfig = pageConfig?.designConfig as DesignConfig || {
+  const designConfig = (pageConfig?.designConfig as DesignConfig) || {
     primaryColor: '#6366f1',
     backgroundColor: '#ffffff',
     textColor: '#1f2937',
     fontFamily: 'Inter',
     theme: 'modern' as const,
-    };
+  };
 
   const ensureFullHexColor = (color: string): string => {
     if (!color.startsWith('#')) return '#000000';
     const hex = color.slice(1);
     if (hex.length === 3) {
-      return '#' + hex.split('').map(c => c + c).join('');
+      return (
+        '#' +
+        hex
+          .split('')
+          .map(c => c + c)
+          .join('')
+      );
     }
     if (hex.length === 6 && /^[0-9A-Fa-f]+$/.test(hex)) {
       return color;
@@ -50,7 +56,10 @@ export default function ProjectEditTabs({ project }: ProjectEditTabsProps) {
     return '#000000'; // fallback
   };
 
-  const handleContentSave = async (newTemplateConfig: TemplateConfig, newDesignConfig: DesignConfig) => {
+  const handleContentSave = async (
+    newTemplateConfig: TemplateConfig,
+    newDesignConfig: DesignConfig
+  ) => {
     try {
       // Validate and clean the data before sending
       const cleanTemplateConfig = {
@@ -69,11 +78,15 @@ export default function ProjectEditTabs({ project }: ProjectEditTabsProps) {
 
       const cleanDesignConfig = {
         primaryColor: ensureFullHexColor(newDesignConfig.primaryColor || '#6366f1'),
-        secondaryColor: newDesignConfig.secondaryColor ? ensureFullHexColor(newDesignConfig.secondaryColor) : undefined,
+        secondaryColor: newDesignConfig.secondaryColor
+          ? ensureFullHexColor(newDesignConfig.secondaryColor)
+          : undefined,
         backgroundColor: ensureFullHexColor(newDesignConfig.backgroundColor || '#ffffff'),
         textColor: ensureFullHexColor(newDesignConfig.textColor || '#1f2937'),
         fontFamily: newDesignConfig.fontFamily || 'Inter',
-        theme: ['modern', 'minimal', 'bold', 'eco', 'tech', 'creative'].includes(newDesignConfig.theme)
+        theme: ['modern', 'minimal', 'bold', 'eco', 'tech', 'creative'].includes(
+          newDesignConfig.theme
+        )
           ? newDesignConfig.theme
           : 'modern',
         customCSS: newDesignConfig.customCSS || undefined,
@@ -107,12 +120,12 @@ export default function ProjectEditTabs({ project }: ProjectEditTabsProps) {
     {
       id: 'details',
       name: 'Project Details',
-      description: 'Basic info, slug, domain, status'
+      description: 'Basic info, slug, domain, status',
     },
     {
       id: 'content',
       name: 'Landing Page Content',
-      description: 'Headlines, features, design, colors'
+      description: 'Headlines, features, design, colors',
     },
   ];
 
@@ -121,7 +134,7 @@ export default function ProjectEditTabs({ project }: ProjectEditTabsProps) {
       {/* Tab Navigation */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          {tabs.map((tab) => (
+          {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
@@ -185,13 +198,26 @@ export default function ProjectEditTabs({ project }: ProjectEditTabsProps) {
               ) : (
                 <div className="text-center py-12">
                   <div className="text-gray-400">
-                    <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <svg
+                      className="mx-auto h-12 w-12"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
                     </svg>
                   </div>
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No page configuration found</h3>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">
+                    No page configuration found
+                  </h3>
                   <p className="mt-1 text-sm text-gray-500">
-                    This project doesn't have a page configuration yet. Create one from the Project Details tab.
+                    This project doesn't have a page configuration yet. Create one from the Project
+                    Details tab.
                   </p>
                 </div>
               )}
